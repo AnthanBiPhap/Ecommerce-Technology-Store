@@ -23,6 +23,9 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+       '@typescript-eslint/no-explicit-any': 'off', // tắt lỗi dùng any
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }], // cảnh báo biến ko dùng
+      'react-hooks/exhaustive-deps': 'warn', // cảnh báo thiếu deps useEffect
     },
   },
 )

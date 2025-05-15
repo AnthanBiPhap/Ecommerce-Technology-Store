@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useState } from "react"
-import { Breadcrumb, Layout, Menu, theme, Input, Space, Badge, Tooltip } from "antd"
+import { Breadcrumb, Layout, Menu, theme, Input, Space} from "antd"
 import {
-  FileOutlined,
+
   PieChartOutlined,
   UserOutlined,
   ShoppingCartOutlined,
@@ -19,10 +19,7 @@ import {
   SettingOutlined,
   CarOutlined,
   FileTextOutlined,
-  HeartOutlined,
-  SearchOutlined,
-  QuestionCircleOutlined,
-  NotificationOutlined,
+  SearchOutlined,   
   MenuFoldOutlined,
   MenuUnfoldOutlined,
 } from "@ant-design/icons"
@@ -102,7 +99,7 @@ const DefaultLayout: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer},
   } = theme.useToken()
 
   // Get the current selected key based on the URL path

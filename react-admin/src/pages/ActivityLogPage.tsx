@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Modal, Input, Select, message, Typography } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Table, Space, Modal, Input, Select, message, Typography } from 'antd';
 import axios from 'axios';
 import { useAuthStore } from '../stores/useAuthStore';
 
@@ -11,8 +10,8 @@ interface ActivityLog {
   action: string;
   entityType: string;
   entityId: string;
-  description: string;
-  metadata: any;
+  description: string;  
+  metadata: string;
   ipAddress: string;
   userAgent: string;
   user: {
