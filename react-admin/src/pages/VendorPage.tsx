@@ -10,6 +10,7 @@ import axios from "axios"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../stores/useAuthStore"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -92,7 +93,7 @@ const VendorPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/vendors", {
+      const response = await axios.get(`${env.API_URL}/api/v1/vendors`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.current,
@@ -134,7 +135,7 @@ const VendorPage: React.FC = () => {
     try {
       if (!tokens?.accessToken) return
 
-      const response = await axios.get("http://localhost:8889/api/v1/users", {
+      const response = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
 
@@ -203,7 +204,7 @@ const VendorPage: React.FC = () => {
       })
 
       setLoading(true)
-      const response = await axios.delete(`http://localhost:8889/api/v1/vendors/${vendorId}`, {
+      const response = await axios.delete(`${env.API_URL}/api/v1/vendors/${vendorId}`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
 
@@ -248,7 +249,7 @@ const VendorPage: React.FC = () => {
       let response
       if (selectedVendor) {
         // Update existing vendor
-        response = await axios.put(`http://localhost:8889/api/v1/vendors/${selectedVendor._id}`, formattedValues, {
+        response = await axios.put(`${env.API_URL}/api/v1/vendors/${selectedVendor._id}`, formattedValues, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
@@ -259,7 +260,7 @@ const VendorPage: React.FC = () => {
         }
       } else {
         // Create new vendor
-        response = await axios.post("http://localhost:8889/api/v1/vendors", formattedValues, {
+        response = await axios.post(`${env.API_URL}/api/v1/vendors`, formattedValues, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

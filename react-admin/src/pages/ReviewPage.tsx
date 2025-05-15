@@ -8,6 +8,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Option } = Select
@@ -59,14 +60,14 @@ const ReviewPage: React.FC = () => {
         if (!tokens?.accessToken) return
 
         setLoadingProducts(true)
-        const productsRes = await axios.get("http://localhost:8889/api/v1/products", {
+        const productsRes = await axios.get(`${env.API_URL}/api/v1/products`, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
           params: { limit: 1000 },
         })
         setProducts(productsRes.data.data.products || [])
 
         setLoadingUsers(true)
-        const usersRes = await axios.get("http://localhost:8889/api/v1/users", {
+        const usersRes = await axios.get(`${env.API_URL}/api/v1/users`, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
           params: { limit: 1000 },
         })
@@ -92,7 +93,7 @@ const ReviewPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/reviews", {
+      const response = await axios.get(`${env.API_URL}/api/v1/reviews`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -167,7 +168,7 @@ const ReviewPage: React.FC = () => {
             return
           }
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/reviews/${reviewId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/reviews/${reviewId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
           message.success("Xóa đánh giá thành công")
@@ -193,12 +194,12 @@ const ReviewPage: React.FC = () => {
       const imagesArr = values.images ? values.images.split(",").map((img: string) => img.trim()) : []
       const body = { ...values, images: imagesArr }
       if (selectedReview) {
-        await axios.put(`http://localhost:8889/api/v1/reviews/${selectedReview._id}`, body, {
+        await axios.put(`${env.API_URL}/api/v1/reviews/${selectedReview._id}`, body, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật đánh giá thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/reviews", body, {
+        await axios.post(`${env.API_URL}/api/v1/reviews`, body, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới đánh giá thành công")

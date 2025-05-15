@@ -33,6 +33,10 @@ const getAll = async(query: any) => {
     const carts = await Cart
     .find(where)
     .populate('user')
+    .populate({
+        path: 'items.product',
+        select: 'product_name slug price salePrice images'
+    })
     .skip((page-1)*limit)
     .limit(limit)
     .sort({...sortObject});

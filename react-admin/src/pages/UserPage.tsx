@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useAuthStore } from '../stores/useAuthStore'
 import { useNavigate } from 'react-router-dom'
 import type { ColumnsType } from 'antd/es/table' // Import ColumnsType
+import { env } from '../constants/getEnvs'
 
 const { Option } = Select
 const { Title } = Typography
@@ -54,7 +55,7 @@ const UserPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get('http://localhost:8889/api/v1/users', {
+      const response = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { page: pagination.page, limit: pagination.limit },
       })
@@ -119,7 +120,7 @@ const UserPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/users/${userId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/users/${userId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -150,13 +151,13 @@ const UserPage: React.FC = () => {
         if (!values.password) delete updateData.password
         if (!values.avatarUrl) delete updateData.avatarUrl
 
-        await axios.put(`http://localhost:8889/api/v1/users/${selectedUser._id}`, updateData, {
+        await axios.put(`${env.API_URL}/api/v1/users/${selectedUser._id}`, updateData, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success('Cập nhật người dùng thành công')
       } else {
-        await axios.post('http://localhost:8889/api/v1/users', values, {
+        await axios.post(`${env.API_URL}/api/v1/users`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

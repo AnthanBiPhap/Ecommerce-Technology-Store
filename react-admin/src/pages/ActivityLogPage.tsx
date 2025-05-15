@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Space, Modal, Input, Select, message, Typography } from 'antd';
 import axios from 'axios';
 import { useAuthStore } from '../stores/useAuthStore';
-
+import { env } from '../constants/getEnvs';
 const { Title } = Typography;
 
 interface ActivityLog {
@@ -59,13 +59,13 @@ const ActivityLogPage: React.FC = () => {
       });
 
       const response = await axios.get(
-        `http://localhost:8889/api/v1/activityLogs?${params.toString()}`,
+        `${env.API_URL}/api/v1/activityLogs?${params.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${tokens.accessToken}`,
           },
         }
-      );
+    );
       
       // Update state with correct data structure
       setActivityLogs(response.data.data.activityLogs);

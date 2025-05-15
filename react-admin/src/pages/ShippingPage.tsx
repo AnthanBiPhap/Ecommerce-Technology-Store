@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../stores/useAuthStore"
 import type { ColumnType } from "antd/es/table"
 import type { Key } from "antd/es/table/interface"
+import { env } from "../constants/getEnvs"
 import dayjs from "dayjs"
 
 const { Title } = Typography
@@ -130,7 +131,7 @@ const ShippingPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/shippings", {
+      const response = await axios.get(`${env.API_URL}/api/v1/shippings`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.current,
@@ -172,7 +173,7 @@ const ShippingPage: React.FC = () => {
     try {
       if (!tokens?.accessToken) return
 
-      const response = await axios.get("http://localhost:8889/api/v1/orders", {
+      const response = await axios.get(`${env.API_URL}/api/v1/orders`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
 
@@ -231,7 +232,7 @@ const ShippingPage: React.FC = () => {
       })
 
       setLoading(true)
-      const response = await axios.delete(`http://localhost:8889/api/v1/shippings/${shippingId}`, {
+      const response = await axios.delete(`${env.API_URL}/api/v1/shippings/${shippingId}`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
 
@@ -269,7 +270,7 @@ const ShippingPage: React.FC = () => {
       let response
       if (selectedShipping) {
         // Update existing shipping
-        response = await axios.put(`http://localhost:8889/api/v1/shippings/${selectedShipping._id}`, formattedValues, {
+        response = await axios.put(`${env.API_URL}/api/v1/shippings/${selectedShipping._id}`, formattedValues, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
@@ -280,7 +281,7 @@ const ShippingPage: React.FC = () => {
         }
       } else {
         // Create new shipping
-        response = await axios.post("http://localhost:8889/api/v1/shippings", formattedValues, {
+        response = await axios.post(`${env.API_URL}/api/v1/shippings`, formattedValues, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

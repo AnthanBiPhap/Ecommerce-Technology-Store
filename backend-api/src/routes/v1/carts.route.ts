@@ -7,7 +7,7 @@ import { authenticateToken } from "../../middlewares/auth.middleware";
 const router = express.Router();
 
 //getAll
-router.get('/carts', authenticateToken , validateSchemaYup(cartsValidation.getAllSchema), cartsController.getAll);
+router.get('/carts', /*authenticateToken*/ validateSchemaYup(cartsValidation.getAllSchema), cartsController.getAll);
 //get by id
 router.get('/carts/:id' , authenticateToken , validateSchemaYup(cartsValidation.getByIdSchema), cartsController.getById);
 //get by userId

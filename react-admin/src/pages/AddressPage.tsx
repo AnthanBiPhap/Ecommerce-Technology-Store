@@ -6,6 +6,7 @@ import { Table, Button, Space, message, Input, Select, Modal, Form, Checkbox, Ty
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
+import { env } from "../constants/getEnvs"
 
 const { Option } = Select
 const { Title } = Typography
@@ -60,7 +61,7 @@ const AddressPage: React.FC = () => {
         message.error("Vui lòng đăng nhập để tiếp tục")
         return
       }
-      const response = await axios.get("http://localhost:8889/api/v1/users", {
+      const response = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: {
           Authorization: `Bearer ${tokens.accessToken}`,
         },
@@ -83,7 +84,7 @@ const AddressPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/addresses", {
+      const response = await axios.get(`${env.API_URL}/api/v1/addresses`, {
         params: {
           ...params,
           page: pagination.page,
@@ -126,12 +127,12 @@ const AddressPage: React.FC = () => {
       }
 
       if (selectedAddress) {
-        await axios.put(`http://localhost:8889/api/v1/addresses/${selectedAddress._id}`, data, {
+        await axios.put(`${env.API_URL}/api/v1/addresses/${selectedAddress._id}`, data, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật địa chỉ thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/addresses", data, {
+        await axios.post(`${env.API_URL}/api/v1/addresses`, data, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới địa chỉ thành công")
@@ -172,7 +173,7 @@ const AddressPage: React.FC = () => {
             return
           }
 
-          await axios.delete(`http://localhost:8889/api/v1/addresses/${addressId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/addresses/${addressId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 

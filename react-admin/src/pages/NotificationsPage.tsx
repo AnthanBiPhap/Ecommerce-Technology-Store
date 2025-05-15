@@ -14,6 +14,7 @@ import {
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
@@ -64,7 +65,7 @@ const NotificationsPage: React.FC = () => {
   const fetchUsers = async () => {
     try {
       if (!tokens?.accessToken) return
-      const response = await axios.get("http://localhost:8889/api/v1/users", {
+      const response = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { limit: 1000 },
       })
@@ -81,7 +82,7 @@ const NotificationsPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/notifications", {
+      const response = await axios.get(`${env.API_URL}/api/v1/notifications`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -142,12 +143,12 @@ const NotificationsPage: React.FC = () => {
         user: values.user,
       }
       if (selectedNotification) {
-        await axios.put(`http://localhost:8889/api/v1/notifications/${selectedNotification._id}`, payload, {
+        await axios.put(`${env.API_URL}/api/v1/notifications/${selectedNotification._id}`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật thông báo thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/notifications", payload, {
+        await axios.post(`${env.API_URL}/api/v1/notifications`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới thông báo thành công")
@@ -170,7 +171,7 @@ const NotificationsPage: React.FC = () => {
       }
 
       await axios.put(
-        `http://localhost:8889/api/v1/notifications/${notificationId}/read`,
+        `${env.API_URL}/api/v1/notifications/${notificationId}/read`,
         {},
         {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },

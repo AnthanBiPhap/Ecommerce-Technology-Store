@@ -36,6 +36,7 @@ import { UploadFile, UploadProps, UploadFileStatus } from "antd/es/upload/interf
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -194,7 +195,7 @@ const ProductsPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/products/${id}`, {
+          await axios.delete(`${env.API_URL}/api/v1/products/${id}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -272,12 +273,12 @@ const ProductsPage: React.FC = () => {
       };
 
       if (selectedProduct) {
-        await axios.put(`http://localhost:8889/api/v1/products/${selectedProduct._id}`, productData, {
+        await axios.put(`${env.API_URL}/api/v1/products/${selectedProduct._id}`, productData, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật sản phẩm thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/products", productData, {
+        await axios.post(`${env.API_URL}/api/v1/products`, productData, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới sản phẩm thành công")
@@ -302,7 +303,7 @@ const ProductsPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/products", {
+      const response = await axios.get(`${env.API_URL}/api/v1/products`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.current,
@@ -323,7 +324,7 @@ const ProductsPage: React.FC = () => {
   const fetchCategories = async () => {
     try {
       if (!tokens?.accessToken) return
-      const response = await axios.get("http://localhost:8889/api/v1/categories/root?limit=30", {
+      const response = await axios.get(`${env.API_URL}/api/v1/categories/root?limit=30`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
       setCategories(response.data.data.categories)
@@ -335,7 +336,7 @@ const ProductsPage: React.FC = () => {
   const fetchBrands = async () => {
     try {
       if (!tokens?.accessToken) return
-      const response = await axios.get("http://localhost:8889/api/v1/brands?limit=100", {
+      const response = await axios.get(`${env.API_URL}/api/v1/brands?limit=100`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
       setBrands(response.data.data.brands)
@@ -347,7 +348,7 @@ const ProductsPage: React.FC = () => {
   const fetchVendors = async () => {
     try {
       if (!tokens?.accessToken) return
-      const response = await axios.get("http://localhost:8889/api/v1/vendors", {
+      const response = await axios.get(`${env.API_URL}/api/v1/vendors`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
       setVendors(response.data.data.vendors)
@@ -425,7 +426,7 @@ const ProductsPage: React.FC = () => {
           }
           if(categoryIndex !== "") {
             const response = await axios.post(
-              `http://localhost:8889/api/v1/uploads/${categoryIndex}`,
+              `${env.API_URL}/api/v1/uploads/${categoryIndex}`,
               formData,
               {
                 headers: {

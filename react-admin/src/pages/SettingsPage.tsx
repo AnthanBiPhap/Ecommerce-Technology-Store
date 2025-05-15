@@ -9,6 +9,7 @@ import type { Key } from "antd/es/table/interface"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -60,7 +61,7 @@ const SettingsPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/settings", {
+      const response = await axios.get(`${env.API_URL}/api/v1/settings`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.current,
@@ -141,7 +142,7 @@ const SettingsPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/settings/${settingId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/settings/${settingId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -194,12 +195,12 @@ const SettingsPage: React.FC = () => {
       }
 
       if (selectedSetting) {
-        await axios.put(`http://localhost:8889/api/v1/settings/${selectedSetting._id}`, payload, {
+        await axios.put(`${env.API_URL}/api/v1/settings/${selectedSetting._id}`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật cài đặt thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/settings", payload, {
+        await axios.post(`${env.API_URL}/api/v1/settings`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới cài đặt thành công")

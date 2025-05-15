@@ -30,6 +30,7 @@ import type { SortOrder } from "antd/es/table/interface"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -89,7 +90,7 @@ const ProductAttributesPage: React.FC = () => {
         search: searchText,
       }
 
-      const response = await axios.get("http://localhost:8889/api/v1/productattributes", {
+      const response = await axios.get(`${env.API_URL}/api/v1/productattributes`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params,
       })
@@ -175,7 +176,7 @@ const ProductAttributesPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/product-attributes/${attributeId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/product-attributes/${attributeId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -217,13 +218,13 @@ const ProductAttributesPage: React.FC = () => {
       console.log("Processed values:", values)
 
       if (selectedAttribute) {
-        await axios.put(`http://localhost:8889/api/v1/product-attributes/${selectedAttribute._id}`, values, {
+        await axios.put(`${env.API_URL}/api/v1/product-attributes/${selectedAttribute._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật thuộc tính thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/product-attributes", values, {
+        await axios.post(`${env.API_URL}/api/v1/product-attributes`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

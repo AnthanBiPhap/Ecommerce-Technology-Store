@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, AppstoreOut
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
@@ -58,7 +59,7 @@ const CategoryPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/categories/root", {
+      const response = await axios.get(`${env.API_URL}/api/v1/categories/root`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -126,7 +127,7 @@ const CategoryPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/categories/${categoryId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/categories/${categoryId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -153,13 +154,13 @@ const CategoryPage: React.FC = () => {
       const values = await form.validateFields()
 
       if (selectedCategory) {
-        await axios.put(`http://localhost:8889/api/v1/categories/${selectedCategory._id}`, values, {
+        await axios.put(`${env.API_URL}/api/v1/categories/${selectedCategory._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật danh mục thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/categories", values, {
+        await axios.post(`${env.API_URL}/api/v1/categories`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

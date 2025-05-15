@@ -12,6 +12,9 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../stores/useAuthStore';
+import { env } from '../constants/getEnvs';
 
 interface Wishlist {
   _id: string;
@@ -35,6 +38,8 @@ interface Product {
 }
 
 const WishlistPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { tokens } = useAuthStore();
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -53,8 +58,15 @@ const WishlistPage: React.FC = () => {
 
   const fetchWishlists = async () => {
     try {
+      if (!tokens?.accessToken) {
+        message.error('Vui lòng đăng nhập để tiếp tục');
+        navigate('/login');
+        return;
+      }
+
       setLoading(true);
-      const response = await axios.get('http://localhost:8889/api/v1/wishlists', {
+      const response = await axios.get(`${env.API_URL}/api/v1/wishlists`, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.current,
           limit: pagination.pageSize,
@@ -74,19 +86,38 @@ const WishlistPage: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:8889/api/v1/users');
+      if (!tokens?.accessToken) return;
+      
+      const response = await axios.get(`${env.API_URL}/api/v1/users`, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` }
+      });
       setUsers(response.data.data.users || []);
-    } catch (error) {
-      message.error('Lỗi khi lấy danh sách người dùng');
+    } catch (error: any) {
+      handleError(error, 'Lỗi khi lấy danh sách người dùng');
     }
   };
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:8889/api/v1/products');
+      if (!tokens?.accessToken) return;
+      
+      const response = await axios.get(`${env.API_URL}/api/v1/products`, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` }
+      });
       setProducts(response.data.data.products || []);
-    } catch (error) {
-      message.error('Lỗi khi lấy danh sách sản phẩm');
+    } catch (error: any) {
+      handleError(error, 'Lỗi khi lấy danh sách sản phẩm');
+    }
+  };
+  
+  const handleError = (error: any, defaultMessage: string) => {
+    if (error.response?.status === 401) {
+      message.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại');
+      navigate('/login');
+    } else if (error.response?.data?.message) {
+      message.error(error.response.data.message);
+    } else {
+      message.error(defaultMessage);
     }
   };
 
@@ -100,7 +131,15 @@ const WishlistPage: React.FC = () => {
         cancelText: 'Hủy',
       });
 
-      await axios.delete(`http://localhost:8889/api/v1/wishlists/${wishlistId}`);
+      if (!tokens?.accessToken) {
+        message.error('Vui lòng đăng nhập để tiếp tục');
+        navigate('/login');
+        return;
+      }
+      
+      await axios.delete(`${env.API_URL}/api/v1/wishlists/${wishlistId}`, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` }
+      });
       message.success('Xóa khỏi danh sách yêu thích thành công');
       fetchWishlists();
     } catch (error) {

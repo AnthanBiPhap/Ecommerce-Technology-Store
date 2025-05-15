@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, Environment
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
@@ -60,7 +61,7 @@ const LocationPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/locations", {
+      const response = await axios.get(`${env.API_URL}/api/v1/locations`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -130,7 +131,7 @@ const LocationPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/locations/${locationId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/locations/${locationId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -157,13 +158,13 @@ const LocationPage: React.FC = () => {
       const values = await form.validateFields()
 
       if (selectedLocation) {
-        await axios.put(`http://localhost:8889/api/v1/locations/${selectedLocation._id}`, values, {
+        await axios.put(`${env.API_URL}/api/v1/locations/${selectedLocation._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật địa điểm thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/locations", values, {
+        await axios.post(`${env.API_URL}/api/v1/locations`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

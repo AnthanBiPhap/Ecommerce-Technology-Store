@@ -48,6 +48,7 @@ import { useAuthStore } from '../stores/useAuthStore';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { env } from '../constants/getEnvs';
 
 const { Header, Content, Sider, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -150,28 +151,28 @@ const DashboardPage: React.FC = () => {
 
       setLoading(true);
       const apiPromises = [
-        axios.get('http://localhost:8889/api/v1/orders', {
+        axios.get(`${env.API_URL}/api/v1/orders`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` },
           params: { limit: 1000 }
         }),
-        axios.get('http://localhost:8889/api/v1/products?limit=100', {
+        axios.get(`${env.API_URL}/api/v1/products?limit=100`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` },
           params: { limit: 1000 }
         }),
-        axios.get('http://localhost:8889/api/v1/users?limit=100', {
+        axios.get(`${env.API_URL}/api/v1/users?limit=100`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` },
           params: { limit: 1000 }
         }),
-        axios.get('http://localhost:8889/api/v1/brands?limit=100', {
+        axios.get(`${env.API_URL}/api/v1/brands?limit=100`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` }
         }),
-        axios.get('http://localhost:8889/api/v1/categories/root?limit=100', {
+        axios.get(`${env.API_URL}/api/v1/categories/root?limit=100`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` }
         }),
-        axios.get('http://localhost:8889/api/v1/coupons?limit=100', {
+        axios.get(`${env.API_URL}/api/v1/coupons?limit=100`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` }
         }),
-        axios.get('http://localhost:8889/api/v1/payments?limit=100', {
+        axios.get(`${env.API_URL}/api/v1/payments?limit=100`, {
           headers: { 'Authorization': `Bearer ${tokens.accessToken}` }
         })
       ];

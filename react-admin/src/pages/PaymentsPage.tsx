@@ -17,6 +17,7 @@ import {
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
@@ -81,7 +82,7 @@ const PaymentsPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/payments", {
+      const response = await axios.get(`${env.API_URL}/api/v1/payments`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -113,7 +114,7 @@ const PaymentsPage: React.FC = () => {
   const fetchUsers = async () => {
     try {
       if (!tokens?.accessToken) return
-      const res = await axios.get("http://localhost:8889/api/v1/users", {
+      const res = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { page: 1, limit: 100 },
       })
@@ -124,7 +125,7 @@ const PaymentsPage: React.FC = () => {
   const fetchOrders = async () => {
     try {
       if (!tokens?.accessToken) return
-      const res = await axios.get("http://localhost:8889/api/v1/orders", {
+      const res = await axios.get(`${env.API_URL}/api/v1/orders`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { page: 1, limit: 100 },
       })
@@ -191,7 +192,7 @@ const PaymentsPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/payments/${paymentId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/payments/${paymentId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -227,13 +228,13 @@ const PaymentsPage: React.FC = () => {
       const payload = { ...values, metadata, user: values.user, order: values.order }
 
       if (selectedPayment) {
-        await axios.put(`http://localhost:8889/api/v1/payments/${selectedPayment._id}`, payload, {
+        await axios.put(`${env.API_URL}/api/v1/payments/${selectedPayment._id}`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật thanh toán thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/payments", payload, {
+        await axios.post(`${env.API_URL}/api/v1/payments`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

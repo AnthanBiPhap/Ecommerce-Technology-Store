@@ -11,6 +11,9 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { useAuthStore } from '../stores/useAuthStore';
+import { env } from '../constants/getEnvs';
+import { useNavigate } from 'react-router-dom';
 
 interface SEO {
   _id: string;
@@ -42,6 +45,8 @@ interface TablePaginationConfig {
 
 
 const SEOPage: React.FC = () => {
+  const { tokens } = useAuthStore();
+  const navigate = useNavigate();
   const [seos, setSEOs] = useState<SEO[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState<Pagination>({
@@ -59,8 +64,14 @@ const SEOPage: React.FC = () => {
 
   const fetchSEOs = async () => {
     try {
+      if (!tokens?.accessToken) {
+        message.error('Vui lòng đăng nhập để tiếp tục');
+        navigate('/login');
+        return;
+      }
       setLoading(true);
-      const response = await axios.get('http://localhost:8889/api/v1/seos', {
+      const response = await axios.get(`${env.API_URL}/api/v1/seos`, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.current,
           limit: pagination.pageSize,
@@ -102,6 +113,12 @@ const SEOPage: React.FC = () => {
 
   const handleDeleteSEO = async (seoId: string) => {
     try {
+      if (!tokens?.accessToken) {
+        message.error('Vui lòng đăng nhập để tiếp tục');
+        navigate('/login');
+        return;
+      }
+
       await Modal.confirm({
         title: 'Xác nhận xóa',
         content: 'Bạn có chắc chắn muốn xóa SEO này?',
@@ -110,7 +127,9 @@ const SEOPage: React.FC = () => {
         cancelText: 'Hủy',
       });
 
-      await axios.delete(`http://localhost:8889/api/v1/seo/${seoId}`);
+      await axios.delete(`${env.API_URL}/api/v1/seo/${seoId}`, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` },
+      });
       message.success('Xóa SEO thành công');
       fetchSEOs();
     } catch (error) {
@@ -122,11 +141,29 @@ const SEOPage: React.FC = () => {
     try {
       const values = await form.validateFields();
       
+      if (!tokens?.accessToken) {
+        message.error('Vui lòng đăng nhập để tiếp tục');
+        navigate('/login');
+        return;
+      }
+      
+      const config = {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` }
+      };
+
       if (selectedSEO) {
-        await axios.put(`http://localhost:8889/api/v1/seos/${selectedSEO._id}`, values);
+        await axios.put(
+          `${env.API_URL}/api/v1/seos/${selectedSEO._id}`, 
+          values,
+          config
+        );
         message.success('Cập nhật SEO thành công');
       } else {
-        await axios.post('http://localhost:8889/api/v1/seos', values);
+        await axios.post(
+          `${env.API_URL}/api/v1/seos`, 
+          values,
+          config
+        );
         message.success('Tạo mới SEO thành công');
       }
 

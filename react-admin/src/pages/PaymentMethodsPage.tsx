@@ -14,6 +14,7 @@ import {
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
@@ -81,7 +82,7 @@ const PaymentMethodsPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/paymentmethods", {
+      const response = await axios.get(`${env.API_URL}/api/v1/paymentmethods`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -156,7 +157,7 @@ const PaymentMethodsPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/paymentmethods/${paymentMethodId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/paymentmethods/${paymentMethodId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -174,7 +175,7 @@ const PaymentMethodsPage: React.FC = () => {
   const fetchUsers = async () => {
     try {
       if (!tokens?.accessToken) return
-      const res = await axios.get("http://localhost:8889/api/v1/users", {
+      const res = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { page: 1, limit: 100 },
       })
@@ -224,13 +225,13 @@ const PaymentMethodsPage: React.FC = () => {
       }
 
       if (selectedPaymentMethod) {
-        await axios.put(`http://localhost:8889/api/v1/paymentmethods/${selectedPaymentMethod._id}`, payload, {
+        await axios.put(`${env.API_URL}/api/v1/paymentmethods/${selectedPaymentMethod._id}`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật phương thức thanh toán thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/paymentmethods", payload, {
+        await axios.post(`${env.API_URL}/api/v1/paymentmethods`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

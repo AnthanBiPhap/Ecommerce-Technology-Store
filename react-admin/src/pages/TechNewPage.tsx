@@ -7,6 +7,7 @@ import axios from "axios"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthStore } from "../stores/useAuthStore"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -68,7 +69,7 @@ const TechNewPage: React.FC = () => {
       }
       
       console.log('Fetching tech news with params:', params)
-      const response = await axios.get("http://localhost:8889/api/v1/technews?limit=50", {
+      const response = await axios.get(`${env.API_URL}/api/v1/technews`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params,
       })
@@ -139,7 +140,7 @@ const TechNewPage: React.FC = () => {
       })
 
       setLoading(true)
-      await axios.delete(`http://localhost:8889/api/v1/technews/${techNewId}`, {
+      await axios.delete(`${env.API_URL}/api/v1/technews/${techNewId}`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
 
@@ -164,12 +165,12 @@ const TechNewPage: React.FC = () => {
 
       setLoading(true)
       if (selectedTechNew) {
-        await axios.put(`http://localhost:8889/api/v1/technews/${selectedTechNew._id}`, values, {
+        await axios.put(`${env.API_URL}/api/v1/technews/${selectedTechNew._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật tin tức thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/technews", values, {
+        await axios.post(`${env.API_URL}/api/v1/technews`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới tin tức thành công")

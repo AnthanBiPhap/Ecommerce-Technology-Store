@@ -8,6 +8,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 
@@ -61,7 +62,7 @@ const ProductInventoriesPage: React.FC = () => {
     try {
       if (!tokens?.accessToken) return
 
-      const response = await axios.get("http://localhost:8889/api/v1/products", {
+      const response = await axios.get(`${env.API_URL}/api/v1/products`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { limit: 100 },
       })
@@ -83,7 +84,7 @@ const ProductInventoriesPage: React.FC = () => {
     try {
       if (!tokens?.accessToken) return
 
-      const response = await axios.get("http://localhost:8889/api/v1/locations", {
+      const response = await axios.get(`${env.API_URL}/api/v1/locations`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { limit: 100 },
       })
@@ -108,7 +109,7 @@ const ProductInventoriesPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/productiventories", {
+      const response = await axios.get(`${env.API_URL}/api/v1/productiventories`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -192,7 +193,7 @@ const ProductInventoriesPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/productiventories/${inventoryId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/productiventories/${inventoryId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -224,14 +225,14 @@ const ProductInventoriesPage: React.FC = () => {
 
       if (selectedInventory) {
         await axios.put(
-          `http://localhost:8889/api/v1/productiventories/${selectedInventory._id}`,
+          `${env.API_URL}/api/v1/productiventories/${selectedInventory._id}`,
           inventoryData,
           { headers: { Authorization: `Bearer ${tokens.accessToken}` } }
         )
         message.success("Cập nhật mục thành công")
       } else {
         await axios.post(
-          "http://localhost:8889/api/v1/productiventories",
+          `${env.API_URL}/api/v1/productiventories`,
           inventoryData,
           { headers: { Authorization: `Bearer ${tokens.accessToken}` } }
         )

@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, TagOutlined
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 import dayjs from "dayjs"
 
 const { Title } = Typography
@@ -62,7 +63,7 @@ const CouponPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/coupons", {
+      const response = await axios.get(`${env.API_URL}/api/v1/coupons`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -132,7 +133,7 @@ const CouponPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/coupons/${couponId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/coupons/${couponId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -168,13 +169,13 @@ const CouponPage: React.FC = () => {
       delete payload.dateRange
 
       if (selectedCoupon) {
-        await axios.put(`http://localhost:8889/api/v1/coupons/${selectedCoupon._id}`, payload, {
+        await axios.put(`${env.API_URL}/api/v1/coupons/${selectedCoupon._id}`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật coupon thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/coupons", payload, {
+        await axios.post(`${env.API_URL}/api/v1/coupons`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 

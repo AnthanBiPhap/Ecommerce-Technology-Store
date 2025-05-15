@@ -17,6 +17,7 @@ import {
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title, Text } = Typography
 const { Search } = Input
@@ -122,7 +123,7 @@ const OrdersPage: React.FC = () => {
 
       setLoading(true)
       try {
-      const response = await axios.get("http://localhost:8889/api/v1/orders", {
+      const response = await axios.get(`${env.API_URL}/api/v1/orders`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -201,7 +202,7 @@ const OrdersPage: React.FC = () => {
         return
       }
       
-      const response = await axios.get("http://localhost:8889/api/v1/products", {
+      const response = await axios.get(`${env.API_URL}/api/v1/products`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { limit: 1000 },
       })
@@ -228,7 +229,7 @@ const OrdersPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/orders/${orderId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/orders/${orderId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -261,7 +262,7 @@ const OrdersPage: React.FC = () => {
       }
 
       if (selectedOrder) {
-        await axios.put(`http://localhost:8889/api/v1/orders/${selectedOrder._id}`, payload, {
+        await axios.put(`${env.API_URL}/api/v1/orders/${selectedOrder._id}`, payload, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật đơn hàng thành công")

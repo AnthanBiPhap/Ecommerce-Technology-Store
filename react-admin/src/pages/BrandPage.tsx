@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = AntInput
@@ -54,7 +55,7 @@ const BrandPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/brands", {
+      const response = await axios.get(`${env.API_URL}/api/v1/brands`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -118,7 +119,7 @@ const BrandPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/brands/${brandId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/brands/${brandId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -146,12 +147,12 @@ const BrandPage: React.FC = () => {
 
       let response
       if (selectedBrand) {
-        response = await axios.put(`http://localhost:8889/api/v1/brands/${selectedBrand._id}`, values, {
+        response = await axios.put(`${env.API_URL}/api/v1/brands/${selectedBrand._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật thương hiệu thành công")
       } else {
-        response = await axios.post("http://localhost:8889/api/v1/brands", values, {
+        response = await axios.post(`${env.API_URL}/api/v1/brands`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới thương hiệu thành công")
