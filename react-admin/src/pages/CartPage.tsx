@@ -7,6 +7,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, ShoppingCar
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
@@ -82,7 +83,7 @@ const CartPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/carts", {
+      const response = await axios.get(`${env.API_URL}/api/v1/carts`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -108,7 +109,7 @@ const CartPage: React.FC = () => {
         return
       }
 
-      const response = await axios.get("http://localhost:8889/api/v1/users", {
+      const response = await axios.get(`${env.API_URL}/api/v1/users`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
 
@@ -121,7 +122,7 @@ const CartPage: React.FC = () => {
   const fetchProducts = async () => {
     try {
       if (!tokens?.accessToken) return
-      const response = await axios.get("http://localhost:8889/api/v1/products", {
+      const response = await axios.get(`${env.API_URL}/api/v1/products`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
       })
       setProducts(response.data.data.products)
@@ -209,7 +210,7 @@ const CartPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/carts/${cartId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/carts/${cartId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -290,12 +291,12 @@ const CartPage: React.FC = () => {
       }
 
       if (selectedCart) {
-        await axios.put(`http://localhost:8889/api/v1/carts/${selectedCart._id}`, data, {
+        await axios.put(`${env.API_URL}/api/v1/carts/${selectedCart._id}`, data, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Cập nhật giỏ hàng thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/carts", data, {
+        await axios.post(`${env.API_URL}/api/v1/carts`, data, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
         message.success("Tạo mới giỏ hàng thành công")

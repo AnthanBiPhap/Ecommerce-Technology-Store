@@ -18,10 +18,11 @@ import {
   InputNumber,
 } from "antd"
 import type { SortOrder } from "antd/es/table/interface"
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons"
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
+import { env } from "../constants/getEnvs"
 import type { TableColumnType } from "antd"
 
 const { Title } = Typography
@@ -75,7 +76,7 @@ const ProductVariantsPage: React.FC = () => {
     try {
       if (!tokens?.accessToken) return
 
-      const response = await axios.get("http://localhost:8889/api/v1/products", {
+      const response = await axios.get(`${env.API_URL}/api/v1/products`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: { limit: 100 },
       })
@@ -100,7 +101,7 @@ const ProductVariantsPage: React.FC = () => {
       }
 
       setLoading(true)
-      const response = await axios.get("http://localhost:8889/api/v1/productvariants", {
+      const response = await axios.get(`${env.API_URL}/api/v1/productvariants`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
         params: {
           page: pagination.page,
@@ -179,7 +180,7 @@ const ProductVariantsPage: React.FC = () => {
           }
 
           setLoading(true)
-          await axios.delete(`http://localhost:8889/api/v1/productvariants/${variantId}`, {
+          await axios.delete(`${env.API_URL}/api/v1/productvariants/${variantId}`, {
             headers: { Authorization: `Bearer ${tokens.accessToken}` },
           })
 
@@ -225,13 +226,13 @@ const ProductVariantsPage: React.FC = () => {
       }
 
       if (selectedVariant) {
-        await axios.put(`http://localhost:8889/api/v1/productvariants/${selectedVariant._id}`, values, {
+        await axios.put(`${env.API_URL}/api/v1/productvariants/${selectedVariant._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
         message.success("Cập nhật biến đổi thành công")
       } else {
-        await axios.post("http://localhost:8889/api/v1/productvariants", values, {
+        await axios.post(`${env.API_URL}/api/v1/productvariants`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
         })
 
@@ -257,7 +258,7 @@ const ProductVariantsPage: React.FC = () => {
         const imageUrl = images?.[0]?.startsWith('http') 
           ? images[0] 
           : images?.[0] 
-            ? `http://localhost:8889${images[0]}`
+            ? `${env.API_URL}${images[0]}`
             : null;
             
         return imageUrl ? (
