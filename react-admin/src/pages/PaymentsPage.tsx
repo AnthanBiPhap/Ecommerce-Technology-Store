@@ -21,7 +21,6 @@ import { env } from "../constants/getEnvs"
 
 const { Title } = Typography
 const { Search } = Input
-const { TextArea } = Input
 const { Option } = Select
 
 interface Payment {
@@ -659,14 +658,7 @@ const PaymentsPage: React.FC = () => {
               </Select>
             ) : (
               <div>
-                <TextArea
-                  rows={4}
-                  placeholder="Nhập JSON cho metadata"
-                  value={customMetadata}
-                  onChange={(e) => setCustomMetadata(e.target.value)}
-                  onBlur={() => form.setFieldsValue({ metadata: customMetadata })}
-                  className="rounded-md mb-2"
-                />
+               
                 <Button
                   size="small"
                   onClick={() => {
