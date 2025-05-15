@@ -76,13 +76,13 @@ const updateById = async(id: string, payload: any) => {
         throw createError(404, "payment not found");
     }
     // kiểm tra xem transactionId tồn tại không
-    const paymentExist = await Payment.findOne({
-        transactionId: payload.transactionId,
-        _id: { $ne: id }
-    });
-    if(paymentExist) {
-        throw createError(404, "payment already exists");
-    }
+    // const paymentExist = await Payment.findOne({
+    //     transactionId: payload.transactionId,
+    //     _id: { $ne: id }
+    // });
+    // if(paymentExist) {
+    //     throw createError(404, "payment already exists");
+    // }
     // trộn dữ liệu mới và cũ
     Object.assign(payment, payload);
     /*lưu ý dữ liệu sau khi trộn chỉ lưu vào bộ nhớ Ram chứ chưa lưu vào database
