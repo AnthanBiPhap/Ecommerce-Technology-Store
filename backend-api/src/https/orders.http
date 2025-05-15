@@ -1,0 +1,60 @@
+### GET ALL
+GET http://localhost:8889/api/v1/orders
+
+### get by id
+GET http://localhost:8889/api/v1/orders/67def287122b4c409039e79e
+
+### get by userId
+GET http://localhost:8889/api/v1/orders/user/680df95981fe8db82a1cf9d3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ2NTg1NzY5LCJleHAiOjE3NDY2NzIxNjl9.yX4xbyDs1_xCiZni7v8F_aF-ysOPnwYgv_lqCDHoNtk
+
+### create
+
+POST http://localhost:8889/api/v1/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY
+
+{
+   "products": [
+    {
+      "productId": "6613b0a2d5622a4f3b6d3c99",
+      "name": "Microsoft Surface Pro 8",
+      "quantity": 1,
+      "price": 1200
+    },
+    {
+      "productId": "6613b0a2d5622a4f3b6d3c9a",
+      "name": "Logitech MX Master 3",
+      "quantity": 2,
+      "price": 100
+    }
+  ],
+  "totalAmount": 1400,      
+  "shippingFee": 20,
+  "tax": 50,
+  "discount": 0,
+  "paymentMethod": "credit_card",
+  "paymentStatus": "pending",
+  "shippingAddress": {
+    "street": "123 Tech Street",
+    "ward": "Ward 1",
+    "district": "District 3",
+    "city": "Ho Chi Minh City",
+    "country": "Vietnam",
+    "postalCode": "70000"
+  },
+  "status": "pending",
+  "notes": "Please deliver between 9AM - 12PM",
+  "user": "67f4cab25268f5fb727f9bea" 
+}
+
+
+### update by id
+PUT http://localhost:8889/api/v1/orders/67def287122b4c409039e79e
+Content-Type: application/json
+
+
+
+### delete by id
+DELETE http://localhost:8889/api/v1/orders/67deea930d9bae179e3bc9df

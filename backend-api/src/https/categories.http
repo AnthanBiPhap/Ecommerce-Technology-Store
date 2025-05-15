@@ -1,0 +1,59 @@
+### GET ALL CATEGORIES LEVEL = 1
+GET http://localhost:8889/api/v1/categories
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+### GET ALL CATEGORIES LEVEL = 0
+GET http://localhost:8889/api/v1/categories/root
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+### GET ALL CHILDREN CATEGORIES
+GET http://localhost:8889/api/v1/categories/children/6803f0c103bc2c0f4f04020b
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+
+### get by id
+GET http://localhost:8889/api/v1/categories/67d4f565e8a642017c78d9dd
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+
+### //------------------------- BEGIN CREATE -------------------------// ###
+### create lvl 0
+
+POST http://localhost:8889/api/v1/categories
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+{
+    "category_name": "Apple",
+    "description": "Sản phẩm Apple chính hãng: MacBook, iMac, phụ kiện và phần mềm liên quan.",
+    "imageUrl": "http://localhost:8889/uploads/categories/apple_categories.webp"
+}
+
+### create lvl 1
+
+POST http://localhost:8889/api/v1/categories
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+{
+    "category_name": "Laptop văn phòng",
+    "description": "Dòng laptop mỏng nhẹ, pin lâu, phù hợp cho dân văn phòng.",
+    "imageUrl": "http://localhost:8889/uploads/categories/laptop_categories.webp",
+    "parentId": "6803f0c103bc2c0f4f04020b",
+    "level": 1
+}
+
+
+### //------------------------- END CREATE -------------------------// ###
+
+### update by id
+PUT http://localhost:8889/api/v1/categories/680519fb3556be7314126504
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTE2MzY0OSwiZXhwIjoxNzQ1MjUwMDQ5fQ.luFlRQ6Hf612ej4IfB3RahJfUS7l65MrYcVdowefs2E
+
+{
+    "category_name": "Thiết bị VP"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/categories/67d792aba8fc6e96d2595f37

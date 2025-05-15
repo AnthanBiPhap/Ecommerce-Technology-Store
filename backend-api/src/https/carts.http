@@ -1,0 +1,209 @@
+### GET ALL
+GET http://localhost:8889/api/v1/carts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+### get by id
+GET http://localhost:8889/api/v1/carts/67e25c33a31721c7dab94277
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+### get by userId
+GET http://localhost:8889/api/v1/carts/user/680df95981fe8db82a1cf9d3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ2MzQ1MTMyLCJleHAiOjE3NDY0MzE1MzJ9.pq_z14e5XdSTW-oe1U4IxG4kfKk24kjlOOBYJkivIBM
+
+
+### create
+
+POST http://localhost:8889/api/v1/carts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY
+
+{
+    "items": [
+        {
+            "productVariant": "680f2ba3703d87103187aa30",
+            "quantity": 1,
+            "currentPrice": 20990000,
+            "currentSalePrice": 18490000,
+            "totalAmount": 18490000
+        },
+        {
+            "productVariant": "680f2c19703d87103187aa34",
+            "quantity": 1,
+            "currentPrice": 26510000,
+            "currentSalePrice": 25290000,
+            "totalAmount": 25290000
+        }
+    ],
+    "totalAmount": 43780000,
+    "user": "680df95981fe8db82a1cf9d3"
+}
+
+### create add to Cart
+
+POST http://localhost:8889/api/v1/carts/user/680df95981fe8db82a1cf9d3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY
+
+    {
+        "productVariant": "680f2ba3703d87103187aa30",
+        "quantity": 1,
+        "currentPrice": 20990000,
+        "currentSalePrice": 18490000,
+        "totalAmount": 18490000
+    }
+
+
+### update by id
+PUT http://localhost:8889/api/v1/carts/67da7b8ca1d1c9a428f76c80
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY
+
+{
+    "items": [
+      {
+        "productVariant": {
+          "_id": "680f2c19703d87103187aa34",
+          "variantName": "Black - Medium",
+          "price": 26510000,
+          "salePrice": 25290000,
+          "images": [
+            "http://localhost:8889/uploads/PC_GVN_AMD_R5_7600_VGA_RTX_4060/cougar_2101a66491414b49a99fcd1e4e0421ad_grande.webp"
+          ],
+          "product": {
+            "_id": "68075c40c03069f384176d55",
+            "product_name": "PC GVN AMD R5-7600/ VGA RTX 4060"
+          }
+        },
+        "quantity": 1,
+        "currentPrice": 26510000,
+        "currentSalePrice": 25290000,
+        "totalAmount": 25290000,
+        "_id": "680f37a3703d87103187aaa8"
+      },
+      {
+        "productVariant": {
+          "_id": "68102e0328f3b9e7ba719a60",
+          "variantName": "Pink",
+          "price": 4900000,
+          "salePrice": 3800000,
+          "images": [
+            "http://localhost:8889/uploads/Ban_phim_Logitech_G_Pro_X_60_Light_Speed_Pink/dufbqwqs_7ec5e71e61e6445ea7f366c2bb2f0bc7_grande.webp"
+          ],
+          "product": {
+            "_id": "68071138c03069f38417541b",
+            "product_name": "Bàn phím Logitech G Pro X 60 Light Speed Pink"
+          }
+        },
+        "quantity": 1,
+        "currentPrice": 4900000,
+        "currentSalePrice": 3800000,
+        "totalAmount": 3800000,
+        "_id": "6810537e6d1c3c758c7a83e1"
+      },
+      {
+        "productVariant": {
+          "_id": "680f2ba3703d87103187aa30",
+          "variantName": "Red - Large",
+          "price": 20990000,
+          "salePrice": 18490000,
+          "images": [
+            "http://localhost:8889/uploads/Laptop_ASUS_Vivobook_15_OLED_A1505VA_MA468W/khung_laptop_23_b898f38424a44201bf2df947e637c74e_grande.webp"
+          ],
+          "product": {
+            "_id": "68076d99c03069f38417945c",
+            "product_name": "Laptop ASUS Vivobook 15 OLED A1505VA MA468W"
+          }
+        },
+        "quantity": 2,
+        "currentPrice": 20990000,
+        "currentSalePrice": 18490000,
+        "totalAmount": 36980000,
+        "_id": "6810b3b9f64e14f844beb33f"
+      }
+    ],
+    "totalAmount": 66070000
+}
+
+### update by userId
+PUT http://localhost:8889/api/v1/carts/user/680df95981fe8db82a1cf9d3
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY
+
+{
+    "items": [
+      {
+        "productVariant": {
+          "_id": "680f2c19703d87103187aa34",
+          "variantName": "Black - Medium",
+          "price": 26510000,
+          "salePrice": 25290000,
+          "images": [
+            "http://localhost:8889/uploads/PC_GVN_AMD_R5_7600_VGA_RTX_4060/cougar_2101a66491414b49a99fcd1e4e0421ad_grande.webp"
+          ],
+          "product": {
+            "_id": "68075c40c03069f384176d55",
+            "product_name": "PC GVN AMD R5-7600/ VGA RTX 4060"
+          }
+        },
+        "quantity": 1,
+        "currentPrice": 26510000,
+        "currentSalePrice": 25290000,
+        "totalAmount": 25290000,
+        "_id": "680f37a3703d87103187aaa8"
+      },
+      {
+        "productVariant": {
+          "_id": "68102e0328f3b9e7ba719a60",
+          "variantName": "Pink",
+          "price": 4900000,
+          "salePrice": 3800000,
+          "images": [
+            "http://localhost:8889/uploads/Ban_phim_Logitech_G_Pro_X_60_Light_Speed_Pink/dufbqwqs_7ec5e71e61e6445ea7f366c2bb2f0bc7_grande.webp"
+          ],
+          "product": {
+            "_id": "68071138c03069f38417541b",
+            "product_name": "Bàn phím Logitech G Pro X 60 Light Speed Pink"
+          }
+        },
+        "quantity": 1,
+        "currentPrice": 4900000,
+        "currentSalePrice": 3800000,
+        "totalAmount": 3800000,
+        "_id": "6810537e6d1c3c758c7a83e1"
+      },
+      {
+        "productVariant": {
+          "_id": "680f2ba3703d87103187aa30",
+          "variantName": "Red - Large",
+          "price": 20990000,
+          "salePrice": 18490000,
+          "images": [
+            "http://localhost:8889/uploads/Laptop_ASUS_Vivobook_15_OLED_A1505VA_MA468W/khung_laptop_23_b898f38424a44201bf2df947e637c74e_grande.webp"
+          ],
+          "product": {
+            "_id": "68076d99c03069f38417945c",
+            "product_name": "Laptop ASUS Vivobook 15 OLED A1505VA MA468W"
+          }
+        },
+        "quantity": 2,
+        "currentPrice": 20990000,
+        "currentSalePrice": 18490000,
+        "totalAmount": 36980000,
+        "_id": "6810b3b9f64e14f844beb33f"
+      }
+    ],
+    "totalAmount": 66070000
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/carts/67e0cc7d482ac8b000f367df
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg4ODExMCwiZXhwIjoxNzQyOTc0NTEwfQ.sb3QWdECqWK_CpM4ratsR6IipBsfbZkjVMeLtjE7TGY
+
+### delete by itemId
+DELETE http://localhost:8889/api/v1/carts/user/680df95981fe8db82a1cf9d3/item/681052406831c119a728a331
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY

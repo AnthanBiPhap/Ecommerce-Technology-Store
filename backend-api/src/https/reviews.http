@@ -1,0 +1,41 @@
+### GET ALL
+GET http://localhost:8889/api/v1/reviews?productId=68075346c03069f384176c8c
+Content-Type: application/json
+
+
+### get by id
+GET http://localhost:8889/api/v1/reviews/67e25c33a31721c7dab94277
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+### create
+
+POST http://localhost:8889/api/v1/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+{
+    "rating": 3,
+    "title": "Hello",
+    "comment": "hello world",
+    "images": [
+        "https://th.bing.com/th/id/OIP.dwHPyOxaeZywNanOnoYklgHaHa?rs=1&pid=ImgDetMain",
+        "https://th.bing.com/th/id/OIP.YBM5fBstD-jngzDnGqTM-wHaE8?pid=ImgDet&w=184&h=122&c=7&dpr=1.3"
+    ],
+    "isVerified": "false",
+    "product": "67f4e12fc35586b4fbe9b15f",
+    "user": "67f4cab25268f5fb727f9bea"
+}
+### update by id
+PUT http://localhost:8889/api/v1/reviews/67da7b8ca1d1c9a428f76c80
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UwY2M3ZDQ4MmFjOGIwMDBmMzY3ZGYiLCJlbWFpbCI6InBodW9uZ25ndXllbnRoYW5oQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg4NzY4OSwiZXhwIjoxNzc0NDIzNjg5fQ.BeIf5IGT1UMF1c5F8GgfmTb81v4Q83RFed5XJ5nBgGw
+
+{
+    "description": ""
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/reviews/67e0cc7d482ac8b000f367df
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg4ODExMCwiZXhwIjoxNzQyOTc0NTEwfQ.sb3QWdECqWK_CpM4ratsR6IipBsfbZkjVMeLtjE7TGY

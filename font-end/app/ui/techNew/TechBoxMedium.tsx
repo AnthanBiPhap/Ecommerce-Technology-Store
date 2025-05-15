@@ -1,0 +1,138 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { env } from "../../../libs/env.helper";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
+
+type TTechNew = {
+  _id: string;
+  title: string;
+  keyword: string;
+  thumbnail: string;
+  description: string;
+  content: string;
+  date: Date;
+};
+
+type TData = {
+    techNews: TTechNew[];
+    pagination: {
+        totalRecord: number,
+        page: number,
+        limit: number
+    };
+};
+
+
+
+export default function TechBoxMedium() {
+  const [data, setData] = useState<TData | null>(null);
+      const router = useRouter();
+      const limit = 8;
+      const [currentPage, setCurrentPage] = useState(1);
+
+    //get all data technology news
+    const fetchData = async (page: number): Promise<TData | undefined> => {
+    try {
+        const response = await axios.get(`${env.API_URL}/technews?page=${page}&limit=${limit}`);
+        return response?.data?.data;
+    } catch (error) {
+        console.log('fetching data failed')
+    }
+    };
+
+  useEffect(() => {
+    const getTechNews = async () => {
+      const result = await fetchData(currentPage);
+      if(result !== undefined) {
+        setData(result);
+      }
+      
+    };
+    getTechNews();
+  }, [currentPage]);
+
+  const totalPages = Math.ceil((data?.pagination?.totalRecord ?? 0) / limit);
+
+  const TechNewItem = ({ techNews }: { techNews: TTechNew }) => {
+    const router = useRouter();
+    return (
+      <div
+        onClick={() => {
+          router.push(`/pages/tin-tuc-cong-nghe/${techNews._id}`);
+        }}
+        className="p-2 grid grid-cols-3 gap-x-4"
+      >
+        <div className="col-span-1 relative w-[378px] h-[200px]">
+          <Image
+            alt={techNews.title}
+            src={techNews.thumbnail}
+            className="rounded-sm"
+            fill
+          />
+        </div>
+        <div className="col-span-2">
+          <h1 className="font-semibold text-gray-800 hover:text-red-500">
+            {techNews.description}
+          </h1>
+          <p className=" text-gray-500 w-[750px] mt-2 overflow-hidden !text-ellipsis !line-clamp-6">
+            {techNews.content}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-white mt-2 flex flex-col">
+      <h1 className="font-bold text-2xl px-2 py-4 text-gray-900 hover:text-red-500 cursor-pointer">
+        Tin tức công nghệ
+      </h1>
+      <div className="grid grid-cols-1 gap-y-2 cursor-pointer">
+        {data?.techNews.map((t) => (
+          <TechNewItem key={t._id} techNews={t} />
+        ))}
+      </div>
+      <div>
+      <Pagination className="pt-2 pb-4 justify-end">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : ""
+              }
+            />
+          </PaginationItem>
+
+          <PaginationItem>
+            <span className="text-sm px-3 py-2 border rounded">
+              Trang {currentPage} / {totalPages}
+            </span>
+          </PaginationItem>
+
+          <PaginationItem>
+            <PaginationNext
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              className={
+                currentPage === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      </div>
+    </div>
+  );
+}

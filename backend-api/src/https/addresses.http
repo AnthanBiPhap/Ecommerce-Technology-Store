@@ -1,0 +1,50 @@
+### GET ALL
+GET http://localhost:8889/api/v1/addresses
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### get by id
+GET http://localhost:8889/api/v1/addresses/6800a1756acc4bfbf1fc7759
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU5NDY4MCwiZXhwIjoxNzQ1NjgxMDgwfQ.yNqolnWf1uKn9ZSfs9hSCo232ZGua6ZZNMMiBQe3NbE
+
+### get by userId
+GET http://localhost:8889/api/v1/addresses/user/6800a1756acc4bfbf1fc7759
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU5NDY4MCwiZXhwIjoxNzQ1NjgxMDgwfQ.yNqolnWf1uKn9ZSfs9hSCo232ZGua6ZZNMMiBQe3NbE
+
+### create
+
+POST http://localhost:8889/api/v1/addresses
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU5NDY4MCwiZXhwIjoxNzQ1NjgxMDgwfQ.yNqolnWf1uKn9ZSfs9hSCo232ZGua6ZZNMMiBQe3NbE
+
+{
+    "type": "shipping",
+    "fullName": "Nguyễn Hồ Thế Đạt",
+    "phoneNumber": "0905273001",
+    "street": "20 Bầu Tràm",
+    "ward": "Hòa Sơn",
+    "district": "Hòa Vang",
+    "city": "Da Nang",
+    "country": "Việt Nam",
+    "isDefault": true,
+    "user": "6800a1756acc4bfbf1fc7759"
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/addresses/67d9452369975e3a9c1c24cc
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0MzA0MTU3NywiZXhwIjoxNzQzMTI3OTc3fQ.SohKOzQiMD4wgKf1_QPSKwwnbkIlKb7IfYDWuhxWOCQ
+
+{
+    "thumbnail": "http://localhost:8889/uploads/addresses/scanner.png"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/addresses/680c8a749e1eae32dda05c28
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU5NDY4MCwiZXhwIjoxNzQ1NjgxMDgwfQ.yNqolnWf1uKn9ZSfs9hSCo232ZGua6ZZNMMiBQe3NbE
+
+
+### update isDefault = true
+PUT http://localhost:8889/api/v1/addresses/isDefault/680cdd733f223fa060f03eee
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBjZGM1ZDNmMjIzZmEwNjBmMDNhNjkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTY3NDY1NSwiZXhwIjoxNzQ1NzYxMDU1fQ.eX-2mV_h318rSjBWFkQBwXJGzgZKMHsjYkvn59UfCyo

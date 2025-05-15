@@ -1,0 +1,42 @@
+### GET ALL
+GET http://localhost:8889/api/v1/productvariants?page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1NzQ2MzAxLCJleHAiOjE3NDU4MzI3MDF9.eJoAdLxknrG7nrp4arsdhBHMPHxdV0pvMW2kOEb4IkE
+
+### get by id
+GET http://localhost:8889/api/v1/productvariants/67f6312bc238472dde2a86fb
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1NzQ2MzAxLCJleHAiOjE3NDU4MzI3MDF9.eJoAdLxknrG7nrp4arsdhBHMPHxdV0pvMW2kOEb4IkE
+
+### create
+
+POST http://localhost:8889/api/v1/productvariants
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1ODU4NzI1LCJleHAiOjE3NDU5NDUxMjV9.uwmhPBrPFyZbwJbfg10p0yaoI6ddXcgNg97UEPmCaNY
+
+{
+  "sku": "SKU000003",
+  "variantName": "Pink",
+  "attributes": {
+    "color": "Pink",
+    "size": "Medium"
+  },
+  "price": 4900000,
+  "salePrice": 3800000,
+  "stock": 50,
+  "images": [
+    "http://localhost:8889/uploads/Ban_phim_Logitech_G_Pro_X_60_Light_Speed_Pink/dufbqwqs_7ec5e71e61e6445ea7f366c2bb2f0bc7_grande.webp"
+  ],
+  "isActive": true,
+  "product": "68071138c03069f38417541b"
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/productvariants/67d9452369975e3a9c1c24cc
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODBkZjk1OTgxZmU4ZGI4MmExY2Y5ZDMiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0ODhAZ21haWwuY29tIiwiaWF0IjoxNzQ1NzQ2MzAxLCJleHAiOjE3NDU4MzI3MDF9.eJoAdLxknrG7nrp4arsdhBHMPHxdV0pvMW2kOEb4IkE
+
+{
+    "thumbnail": "http://localhost:8889/uploads/productVariants/scanner.png"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/productvariants/67d792aba8fc6e96d2595f37

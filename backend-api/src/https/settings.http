@@ -1,0 +1,34 @@
+### GET ALL
+GET http://localhost:8889/api/v1/settings?page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### get by id
+GET http://localhost:8889/api/v1/settings/67f68699cf7289ddd66ecaa8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### create
+
+POST http://localhost:8889/api/v1/settings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+{
+    "key": "Z457",
+    "value": true,
+    "type": "boolean",
+    "group": "AOE",
+    "isPublic": false,
+    "description": "mô tả"
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/settings/67d9452369975e3a9c1c24cc
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0MzA0MTU3NywiZXhwIjoxNzQzMTI3OTc3fQ.SohKOzQiMD4wgKf1_QPSKwwnbkIlKb7IfYDWuhxWOCQ
+
+{
+    "thumbnail": "http://localhost:8889/uploads/settings/scanner.png"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/settings/67d792aba8fc6e96d2595f37

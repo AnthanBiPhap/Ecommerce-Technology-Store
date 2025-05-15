@@ -1,0 +1,27 @@
+### GET ALL
+GET http://localhost:8889/api/v1/brands
+
+### get by id
+GET http://localhost:8889/api/v1/brands/67d4f565e8a642017c78d9dd
+
+### create
+
+POST http://localhost:8889/api/v1/brands
+Content-Type: application/json
+
+{
+    "brand_name": "Apple",
+    "description": "Apple is a brand known for its innovative mobile accessories, offering high-quality screen protectors, cases, keyboards, and charging solutions designed to enhance and protect smartphones, tablets, and other devices."
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/brands/67d559b06c2fd79890075abe
+Content-Type: application/json
+
+{
+    "category_name": "iphone 15 promax",
+    "description": "This is a product for you"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/brands/67d4f726b92e6220a36f1aec

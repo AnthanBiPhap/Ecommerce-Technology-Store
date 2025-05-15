@@ -1,0 +1,37 @@
+### GET ALL
+GET http://localhost:8889/api/v1/coupons
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0MzA0MTU3NywiZXhwIjoxNzQzMTI3OTc3fQ.SohKOzQiMD4wgKf1_QPSKwwnbkIlKb7IfYDWuhxWOCQ
+
+### get by id
+GET http://localhost:8889/api/v1/coupons/67d4f565e8a642017c78d9dd
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjk1NDk4NywiZXhwIjoxNzQzMDQxMzg3fQ.Rasg8BHfrJqspJDu7pdwEc4XJ634dLOeja8Yo5vdtDM
+
+### create
+
+POST http://localhost:8889/api/v1/coupons
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE2ODc2MiwiZXhwIjoxNzQ0MjU1MTYyfQ.am9xaH3J7E36zYHTx0BY-eXlhl1vJs6gbboJQWAo9RM
+
+{
+    "code": "TECHSAVE20",
+    "type": "percentage",
+    "value": 20,
+    "minPurchase": 500,
+    "startDate": "2025-04-08",
+    "endDate": "2025-04-08",
+    "usageLimit": 100,
+    "usageCount": 0,
+    "isActive": true
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/coupons/67d9452369975e3a9c1c24cc
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0MzA0MTU3NywiZXhwIjoxNzQzMTI3OTc3fQ.SohKOzQiMD4wgKf1_QPSKwwnbkIlKb7IfYDWuhxWOCQ
+
+{
+    "thumbnail": "http://localhost:8889/uploads/coupons/scanner.png"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/coupons/67d792aba8fc6e96d2595f37

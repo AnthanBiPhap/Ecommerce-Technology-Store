@@ -1,0 +1,42 @@
+### GET ALL
+GET http://localhost:8889/api/v1/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+### get by id
+GET http://localhost:8889/api/v1/payments/67e25c33a31721c7dab94277
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+### create
+
+POST http://localhost:8889/api/v1/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+{
+    "amount": 1800,
+    "method": "credit_card",
+    "status": "completed",
+    "transactionId": "TXN_987654321",
+    "gateway": "PayPal",
+    "metadata": {
+        "ipAddress": "192.168.1.100",
+        "note": "Paid via credit card at 10:30AM"
+    },
+    "order": "67f54aba828da8ddb34a8a32",
+    "user": "67f4cab25268f5fb727f9bea"
+}
+### update by id
+PUT http://localhost:8889/api/v1/payments/67da7b8ca1d1c9a428f76c80
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UwY2M3ZDQ4MmFjOGIwMDBmMzY3ZGYiLCJlbWFpbCI6InBodW9uZ25ndXllbnRoYW5oQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg4NzY4OSwiZXhwIjoxNzc0NDIzNjg5fQ.BeIf5IGT1UMF1c5F8GgfmTb81v4Q83RFed5XJ5nBgGw
+
+{
+    "description": ""
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/payments/67e0cc7d482ac8b000f367df
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg4ODExMCwiZXhwIjoxNzQyOTc0NTEwfQ.sb3QWdECqWK_CpM4ratsR6IipBsfbZkjVMeLtjE7TGY

@@ -1,0 +1,41 @@
+### GET ALL
+GET http://localhost:8889/api/v1/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
+
+### get by id
+GET http://localhost:8889/api/v1/users/680b58cbcd2845ba20567174
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU3NDYyOSwiZXhwIjoxNzQ1NjYxMDI5fQ.2JmRv0djWO-ltDP-u169FZvcEpJ-8PC_F9q2i--bI5A
+
+### create
+
+POST http://localhost:8889/api/v1/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU3NDYyOSwiZXhwIjoxNzQ1NjYxMDI5fQ.2JmRv0djWO-ltDP-u169FZvcEpJ-8PC_F9q2i--bI5A
+
+{
+    "userName": "Dat",
+    "fullName": "Nguyen Ho The Dat",
+    "email": "datnguyenhothe@gmail.com",
+    "password": "123456",
+    "avatarUrl": "http://localhost:8889/uploads/users/leader_team_5.png"
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/users/6800a1756acc4bfbf1fc7759
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU5NDY4MCwiZXhwIjoxNzQ
+
+{
+    "fullName": "Nguyen Ho The Dat",
+    "phone": "0905111222",
+    "gender": "",
+    "email": "datnguyenhothe@gmail.com",
+    "birthDay": "2005-05-05"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/users/67e0cc7d482ac8b000f367df
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg4ODExMCwiZXhwIjoxNzQyOTc0NTEwfQ.sb3QWdECqWK_CpM4ratsR6IipBsfbZkjVMeLtjE7TGY

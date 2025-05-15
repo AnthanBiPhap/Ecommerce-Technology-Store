@@ -1,0 +1,37 @@
+### GET ALL
+GET http://localhost:8889/api/v1/notifications?page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### get by id
+GET http://localhost:8889/api/v1/notifications/67f62912e4466d84511865ea
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### create
+
+POST http://localhost:8889/api/v1/notifications
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+{
+    "type": "order",
+    "title": "Chào bạn",
+    "message": "Đã đặt hàng",
+    "metadata": {
+        "ipAddress": "192.168.1.100",
+        "note": "Paid via credit card at 10:30AM"
+    },
+    "isRead": false,
+    "user": "67f4cab25268f5fb727f9bea"
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/notifications/67d9452369975e3a9c1c24cc
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0MzA0MTU3NywiZXhwIjoxNzQzMTI3OTc3fQ.SohKOzQiMD4wgKf1_QPSKwwnbkIlKb7IfYDWuhxWOCQ
+
+{
+    "thumbnail": "http://localhost:8889/uploads/notifications/scanner.png"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/notifications/67d792aba8fc6e96d2595f37

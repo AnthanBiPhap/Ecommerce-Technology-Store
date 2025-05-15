@@ -1,0 +1,36 @@
+### GET ALL
+GET http://localhost:8889/api/v1/productattributes?page=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### get by id
+GET http://localhost:8889/api/v1/productattributes/67f69a61583934d9c668f957
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+### create
+
+POST http://localhost:8889/api/v1/productattributes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDE3MDc4OCwiZXhwIjoxNzQ0MjU3MTg4fQ.t0z_EeHQTDuyvX1GJEEr-YY4LfC17rgq1Hg4GYxw5g8
+
+{
+    "name": "Microsoft Surface Pro 8",
+    "displayName": "12.3 Inches",
+    "description": "Microsoft Surface Pro 8 is a next-gen laptop with the versatility of a studio and tablet. Powered by the 10th Gen Intel Core i5 processor, 8GB RAM, and 256GB SSD, it delivers performance in a slim and light design.",
+    "type": "boolean",
+    "options": [1,2,3],
+    "isFilterable": false,
+    "isVariant": false,
+    "isRequired": false
+}
+
+### update by id
+PUT http://localhost:8889/api/v1/productattributes/67d9452369975e3a9c1c24cc
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2UyNWMzM2EzMTcyMWM3ZGFiOTQyNzciLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0MzA0MTU3NywiZXhwIjoxNzQzMTI3OTc3fQ.SohKOzQiMD4wgKf1_QPSKwwnbkIlKb7IfYDWuhxWOCQ
+
+{
+    "thumbnail": "http://localhost:8889/uploads/productattributes/scanner.png"
+}
+
+### delete by id
+DELETE http://localhost:8889/api/v1/productattributes/67d792aba8fc6e96d2595f37
