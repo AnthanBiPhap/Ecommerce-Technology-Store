@@ -1,6 +1,6 @@
 import User from '../models/users.model';
 import createError from 'http-errors';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import {env} from '../helpers/env.helper';
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';

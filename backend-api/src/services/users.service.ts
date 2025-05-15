@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import User from '../models/users.model';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 /**
  * Service :
  * - Nhận đầu vào từ controller
