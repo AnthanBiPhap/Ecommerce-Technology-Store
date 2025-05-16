@@ -55,6 +55,7 @@ const CartPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCart, setSelectedCart] = useState<Cart | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [filteredCarts, setFilteredCarts] = useState<Cart[]>([])
 
   const [products, setProducts] = useState<any[]>([])
   const [selectedProductKeys, setSelectedProductKeys] = useState<string[]>([])
@@ -66,7 +67,7 @@ const CartPage: React.FC = () => {
     fetchCarts()
     fetchUsers()
     fetchProducts()
-  }, [tokens?.accessToken, pagination.page, pagination.limit])
+  }, [tokens?.accessToken])
 
   useEffect(() => {
     // Tự động cập nhật tổng tiền khi sản phẩm hoặc số lượng thay đổi
@@ -88,7 +89,7 @@ const CartPage: React.FC = () => {
         params: {
           page: pagination.page,
           limit: pagination.limit,
-          ...(search ? { userName: search } : {}),
+          ...(search ? { search: search } : {}),
         },
       })
 
@@ -329,8 +330,38 @@ const CartPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchCarts(value)
+
+    // Sử dụng setTimeout để tránh gọi API quá nhiều khi người dùng đang gõ
+    const timer = setTimeout(() => {
+      const filtered = carts.filter((cart) => {
+        const searchLower = value.toLowerCase()
+        return (
+          cart.user?.userName?.toLowerCase().includes(searchLower) ||
+          cart.user?.fullName?.toLowerCase().includes(searchLower) ||
+          cart.items.some(item => item.product?.product_name?.toLowerCase().includes(searchLower))
+        )
+      })
+      setFilteredCarts(filtered)
+    }, 300)
+
+    return () => clearTimeout(timer)
   }
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      // Reset kết quả khi không có từ khóa tìm kiếm
+      setPagination({ ...pagination, page: 1 })
+      fetchCarts()
+      return
+    }
+
+    // Sử dụng setTimeout để tránh gọi API quá nhiều khi người dùng đang gõ
+    const timer = setTimeout(() => {
+      fetchCarts(searchTerm)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -486,7 +517,7 @@ const CartPage: React.FC = () => {
       <div className="mb-6">
         <Space>
           <Search
-            placeholder="Tìm kiếm theo tên người dùng"
+            placeholder="Tìm kiếm theo tên người dùng, tên sản phẩm hoặc tên đầy đủ"
             allowClear
             enterButton={
               <Button type="primary" icon={<SearchOutlined />}>
@@ -494,7 +525,7 @@ const CartPage: React.FC = () => {
               </Button>
             }
             size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -503,12 +534,12 @@ const CartPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={carts}
+          dataSource={searchTerm ? filteredCarts : carts}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredCarts.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} carts</span>,

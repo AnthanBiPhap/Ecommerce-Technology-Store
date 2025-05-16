@@ -38,6 +38,7 @@ const TechNewPage: React.FC = () => {
   const navigate = useNavigate()
   const { tokens } = useAuthStore()
   const [techNews, setTechNews] = useState<TechNew[]>([])
+  const [filteredTechNews, setFilteredTechNews] = useState<TechNew[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({
     current: 1,
@@ -99,9 +100,24 @@ const TechNewPage: React.FC = () => {
     }
   }
 
-  const handleSearch = () => {
+  const handleSearch = (value: string) => {
+    setSearchTerm(value)
     setPagination({ ...pagination, current: 1 })
-    fetchTechNews(searchTerm)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = techNews.filter((techNew) => {
+      const searchLower = value.toLowerCase()
+      const titleLower = techNew.title.toLowerCase()
+      const keywordLower = techNew.keyword.toLowerCase()
+      const descriptionLower = techNew.description.toLowerCase()
+      
+      return (
+        titleLower.includes(searchLower) ||
+        keywordLower.includes(searchLower) ||
+        descriptionLower.includes(searchLower)
+      )
+    })
+    setFilteredTechNews(filtered)
   }
 
   const handleAddTechNew = () => {
@@ -294,22 +310,17 @@ const TechNewPage: React.FC = () => {
         </Title>
         <Space>
           <Input
-            placeholder="Search by title"
+            placeholder="Search by title, keyword or description"
             allowClear
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onPressEnter={handleSearch}
+            onChange={(e) => {
+              const value = e.target.value
+              setSearchTerm(value)
+              handleSearch(value)
+            }}
             className="w-80 rounded-md"
             prefix={<SearchOutlined />}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={handleSearch}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Search
-          </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -324,12 +335,12 @@ const TechNewPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={techNews}
+          dataSource={searchTerm ? filteredTechNews : techNews}
           loading={loading}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
-            total: pagination.total,
+            total: searchTerm ? filteredTechNews.length : pagination.total,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} tech news</span>,

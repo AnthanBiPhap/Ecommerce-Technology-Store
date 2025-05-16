@@ -43,6 +43,7 @@ const ProductInventoriesPage: React.FC = () => {
   const [form] = Form.useForm()
 
   const [inventories, setInventories] = useState<ProductInventory[]>([])
+  const [filteredInventories, setFilteredInventories] = useState<ProductInventory[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -149,6 +150,20 @@ const ProductInventoriesPage: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
     setSearchText(value)
+    setPagination({ ...pagination, page: 1 })
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = inventories.filter((inventory) => {
+      const searchLower = value.toLowerCase()
+      const productNameLower = inventory.product.product_name.toLowerCase()
+      const locationLower = inventory.location?.name?.toLowerCase() || ""
+      
+      return (
+        productNameLower.includes(searchLower) ||
+        locationLower.includes(searchLower)
+      )
+    })
+    setFilteredInventories(filtered)
   }
 
   const handleAddInventory = () => {
@@ -384,20 +399,12 @@ const ProductInventoriesPage: React.FC = () => {
         </Title>
         <Space>
           <Input
-            placeholder="Tìm kiếm..."
+            placeholder="Tìm kiếm theo tên sản phẩm hoặc tên kho"
             onChange={handleSearch}
             value={searchText}
             prefix={<SearchOutlined />}
             className="w-80 rounded-md"
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={() => fetchInventories()}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Tìm kiếm
-          </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -412,12 +419,12 @@ const ProductInventoriesPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={inventories}
+          dataSource={searchText ? filteredInventories : inventories}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchText ? filteredInventories.length : pagination.totalRecord,
             onChange: (page: number, pageSize: number) => {
               setPagination({ ...pagination, page, limit: pageSize })
             },

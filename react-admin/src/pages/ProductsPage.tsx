@@ -134,9 +134,16 @@ const ProductsPage: React.FC = () => {
 
   const isAdmin = user?.roles === "admin"
 
-  const handleSearch = () => {
+  const handleSearch = (value: string) => {
+    setSearchTerm(value)
     setPagination({ ...pagination, current: 1 })
-    fetchProducts()
+
+    // Sử dụng setTimeout để tránh gọi API quá nhiều khi người dùng đang gõ
+    const timer = setTimeout(() => {
+      fetchProducts()
+    }, 300)
+
+    return () => clearTimeout(timer)
   };
 
   const handleAddProduct = () => {
@@ -670,19 +677,10 @@ const ProductsPage: React.FC = () => {
             placeholder="Tìm kiếm theo tên sản phẩm"
             allowClear
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onPressEnter={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
             prefix={<SearchOutlined />}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={handleSearch}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Tìm kiếm
-          </Button>
         </Space>
       </div>
 

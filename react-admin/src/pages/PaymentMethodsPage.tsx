@@ -59,6 +59,7 @@ const PaymentMethodsPage: React.FC = () => {
   const [form] = Form.useForm()
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
+  const [filteredPaymentMethods, setFilteredPaymentMethods] = useState<PaymentMethod[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -258,7 +259,18 @@ const PaymentMethodsPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchPaymentMethods(value)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = paymentMethods.filter((method) => {
+      const searchLower = value.toLowerCase()
+      return (
+        method.provider.toLowerCase().includes(searchLower) ||
+        method.user?.userName?.toLowerCase().includes(searchLower) ||
+        method.accountNumber.toLowerCase().includes(searchLower) ||
+        method.cardholderName.toLowerCase().includes(searchLower)
+      )
+    })
+    setFilteredPaymentMethods(filtered)
   }
 
   const formatDate = (dateString: string) => {
@@ -419,13 +431,8 @@ const PaymentMethodsPage: React.FC = () => {
           <Search
             placeholder="Tìm kiếm theo nhà cung cấp"
             allowClear
-            enterButton={
-              <Button type="primary" icon={<SearchOutlined />}>
-                Tìm kiếm
-              </Button>
-            }
             size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -434,12 +441,28 @@ const PaymentMethodsPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={paymentMethods}
+          dataSource={searchTerm ? paymentMethods.filter((method) => {
+            const searchLower = searchTerm.toLowerCase()
+            return (
+              method.provider.toLowerCase().includes(searchLower) ||
+              method.user?.userName?.toLowerCase().includes(searchLower) ||
+              method.accountNumber.toLowerCase().includes(searchLower) ||
+              method.cardholderName.toLowerCase().includes(searchLower)
+            )
+          }) : paymentMethods}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? paymentMethods.filter((method) => {
+              const searchLower = searchTerm.toLowerCase()
+              return (
+                method.provider.toLowerCase().includes(searchLower) ||
+                method.user?.userName?.toLowerCase().includes(searchLower) ||
+                method.accountNumber.toLowerCase().includes(searchLower) ||
+                method.cardholderName.toLowerCase().includes(searchLower)
+              )
+            }).length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} payment methods</span>,

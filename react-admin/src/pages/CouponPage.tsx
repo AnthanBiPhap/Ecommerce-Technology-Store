@@ -47,6 +47,7 @@ const CouponPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [filteredCoupons, setFilteredCoupons] = useState<Coupon[]>([])
 
   const isAdmin = user?.roles === "admin"
 
@@ -201,8 +202,13 @@ const CouponPage: React.FC = () => {
 
   const handleSearch = (value: string) => {
     setSearchTerm(value)
-    setPagination({ ...pagination, page: 1 })
-    fetchCoupons(value)
+    const filtered = coupons.filter((coupon) => {
+      const searchLower = value.toLowerCase()
+      const codeLower = coupon.code.toLowerCase()
+      
+      return codeLower.includes(searchLower)
+    })
+    setFilteredCoupons(filtered)
   }
 
   const formatCurrency = (amount: number) => {
@@ -364,13 +370,7 @@ const CouponPage: React.FC = () => {
           <Search
             placeholder="Tìm kiếm theo mã coupon"
             allowClear
-            enterButton={
-              <Button type="primary" icon={<SearchOutlined />}>
-                Tìm kiếm
-              </Button>
-            }
-            size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -379,12 +379,12 @@ const CouponPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={coupons}
+          dataSource={searchTerm ? filteredCoupons : coupons}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredCoupons.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} coupons</span>,

@@ -59,6 +59,7 @@ const ProductVariantsPage: React.FC = () => {
   const [form] = Form.useForm()
 
   const [variants, setVariants] = useState<ProductVariant[]>([])
+  const [filteredVariants, setFilteredVariants] = useState<ProductVariant[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -130,9 +131,30 @@ const ProductVariantsPage: React.FC = () => {
     }
   }
 
-  const handleSearch = () => {
+  const handleSearch = (value: string) => {
+    setSearchText(value)
     setPagination({ ...pagination, page: 1 })
-    fetchVariants()
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = variants.filter((variant) => {
+      const searchLower = value.toLowerCase()
+      const skuLower = variant.sku.toLowerCase()
+      const variantNameLower = variant.variantName.toLowerCase()
+      const productNameLower = variant.product.product_name.toLowerCase()
+      
+      // Tìm kiếm trong các thuộc tính
+      const attributesMatch = Object.values(variant.attributes).some((value) => 
+        value.toLowerCase().includes(searchLower)
+      )
+      
+      return (
+        skuLower.includes(searchLower) ||
+        variantNameLower.includes(searchLower) ||
+        productNameLower.includes(searchLower) ||
+        attributesMatch
+      )
+    })
+    setFilteredVariants(filtered)
   }
 
   const handleAddVariant = () => {
@@ -401,22 +423,17 @@ const ProductVariantsPage: React.FC = () => {
         </Title>
         <Space size="large">
           <Input
-            placeholder="Search by variant name or SKU"
+            placeholder="Search by SKU, variant name, product name or attributes"
             allowClear
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onPressEnter={handleSearch}
+            onChange={(e) => {
+              const value = e.target.value
+              setSearchText(value)
+              handleSearch(value)
+            }}
             className="w-80 rounded-md"
             prefix={<SearchOutlined />}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={handleSearch}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Search
-          </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -431,12 +448,12 @@ const ProductVariantsPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={variants}
+          dataSource={searchText ? filteredVariants : variants}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchText ? filteredVariants.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} variants</span>,

@@ -67,6 +67,7 @@ const VendorPage: React.FC = () => {
   const navigate = useNavigate()
   const { tokens } = useAuthStore()
   const [vendors, setVendors] = useState<Vendor[]>([])
+  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({
     current: 1,
@@ -149,9 +150,28 @@ const VendorPage: React.FC = () => {
     }
   }
 
-  const handleSearch = () => {
+  const handleSearch = (value: string) => {
+    setSearchTerm(value)
     setPagination({ ...pagination, current: 1 })
-    fetchVendors(searchTerm)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = vendors.filter((vendor) => {
+      const searchLower = value.toLowerCase()
+      const companyLower = vendor.companyName.toLowerCase()
+      const descriptionLower = vendor.description?.toLowerCase() || ""
+      const phoneLower = vendor.contactPhone.toLowerCase()
+      const emailLower = vendor.contactEmail.toLowerCase()
+      const cityLower = vendor.address.city.toLowerCase()
+      
+      return (
+        companyLower.includes(searchLower) ||
+        descriptionLower.includes(searchLower) ||
+        phoneLower.includes(searchLower) ||
+        emailLower.includes(searchLower) ||
+        cityLower.includes(searchLower)
+      )
+    })
+    setFilteredVendors(filtered)
   }
 
   const handleAddVendor = () => {
@@ -409,22 +429,17 @@ const VendorPage: React.FC = () => {
         </Title>
         <Space>
           <Input
-            placeholder="Search by company name"
+            placeholder="Search by company name, description, phone, email or city"
             allowClear
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onPressEnter={handleSearch}
+            onChange={(e) => {
+              const value = e.target.value
+              setSearchTerm(value)
+              handleSearch(value)
+            }}
             className="w-80 rounded-md"
             prefix={<SearchOutlined />}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={handleSearch}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Search
-          </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -439,12 +454,12 @@ const VendorPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={vendors}
+          dataSource={searchTerm ? filteredVendors : vendors}
           loading={loading}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
-            total: pagination.total,
+            total: searchTerm ? filteredVendors.length : pagination.total,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} vendors</span>,

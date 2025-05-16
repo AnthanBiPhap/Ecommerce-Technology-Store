@@ -178,8 +178,23 @@ const BrandPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchBrands()
   }
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      // Reset kết quả khi không có từ khóa tìm kiếm
+      setPagination({ ...pagination, page: 1 })
+      fetchBrands()
+      return
+    }
+
+    // Sử dụng setTimeout để tránh gọi API quá nhiều khi người dùng đang gõ
+    const timer = setTimeout(() => {
+      fetchBrands()
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
 
   const columns = [
     {
@@ -262,7 +277,7 @@ const BrandPage: React.FC = () => {
               </Button>
             }
             size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>

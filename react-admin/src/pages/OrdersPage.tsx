@@ -98,6 +98,7 @@ const OrdersPage: React.FC = () => {
   const [form] = Form.useForm()
 
   const [orders, setOrders] = useState<Order[]>([])
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -288,7 +289,18 @@ const OrdersPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchOrders(value)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = orders.filter((order) => {
+      const searchLower = value.toLowerCase()
+      return (
+        order.orderNumber.toLowerCase().includes(searchLower) ||
+        order.user?.fullName?.toLowerCase().includes(searchLower) ||
+        order.user?.email?.toLowerCase().includes(searchLower) ||
+        order.user?.phone?.toLowerCase().includes(searchLower)
+      )
+    })
+    setFilteredOrders(filtered)
   }
 
   const formatCurrency = (amount: number) => {
@@ -519,13 +531,8 @@ const OrdersPage: React.FC = () => {
           <Search
             placeholder="Tìm kiếm theo mã đơn hàng"
             allowClear
-            enterButton={
-              <Button type="primary" icon={<SearchOutlined />}>
-                Tìm kiếm
-              </Button>
-            }
             size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -534,12 +541,12 @@ const OrdersPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={orders}
+          dataSource={searchTerm ? filteredOrders : orders}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredOrders.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} orders</span>,

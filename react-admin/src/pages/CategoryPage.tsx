@@ -43,12 +43,13 @@ const CategoryPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [filteredCategories, setFilteredCategories] = useState<Category[]>([])
 
   const isAdmin = user?.roles === "admin"
 
   useEffect(() => {
     fetchCategories()
-  }, [tokens?.accessToken, pagination.page, pagination.limit])
+  }, [tokens?.accessToken])
 
   const fetchCategories = async (search = searchTerm) => {
     try {
@@ -187,7 +188,17 @@ const CategoryPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchCategories(value)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = categories.filter((category) => {
+      const searchLower = value.toLowerCase()
+      return (
+        category.category_name.toLowerCase().includes(searchLower) ||
+        category.description.toLowerCase().includes(searchLower) ||
+        category.slug.toLowerCase().includes(searchLower)
+      )
+    })
+    setFilteredCategories(filtered)
   }
 
   const formatDate = (dateString: string) => {
@@ -328,7 +339,7 @@ const CategoryPage: React.FC = () => {
               </Button>
             }
             size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -337,12 +348,12 @@ const CategoryPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={categories}
+          dataSource={searchTerm ? filteredCategories : categories}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredCategories.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} categories</span>,

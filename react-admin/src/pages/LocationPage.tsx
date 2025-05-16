@@ -45,6 +45,7 @@ const LocationPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
+  const [filteredLocations, setFilteredLocations] = useState<Location[]>([])
 
   const isAdmin = user?.roles === "admin"
 
@@ -191,7 +192,16 @@ const LocationPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchLocations(value)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = locations.filter((location) => {
+      const searchLower = value.toLowerCase()
+      const nameLower = location.name.toLowerCase()
+      const addressLower = getFullAddress(location).toLowerCase()
+      
+      return nameLower.includes(searchLower) || addressLower.includes(searchLower)
+    })
+    setFilteredLocations(filtered)
   }
 
   const formatDate = (dateString: string) => {
@@ -334,15 +344,9 @@ const LocationPage: React.FC = () => {
       <div className="mb-6">
         <Space>
           <Search
-            placeholder="Tìm kiếm theo tên địa điểm"
+            placeholder="Tìm kiếm theo tên hoặc địa chỉ"
             allowClear
-            enterButton={
-              <Button type="primary" icon={<SearchOutlined />}>
-                Tìm kiếm
-              </Button>
-            }
-            size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -351,12 +355,12 @@ const LocationPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={locations}
+          dataSource={searchTerm ? filteredLocations : locations}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredLocations.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} locations</span>,

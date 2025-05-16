@@ -105,6 +105,7 @@ const ShippingPage: React.FC = () => {
   const navigate = useNavigate()
   const { tokens } = useAuthStore()
   const [shippings, setShippings] = useState<Shipping[]>([])
+  const [filteredShippings, setFilteredShippings] = useState<Shipping[]>([])
   const [loading, setLoading] = useState(true)
   const [pagination, setPagination] = useState({
     current: 1,
@@ -187,9 +188,26 @@ const ShippingPage: React.FC = () => {
     }
   }
 
-  const handleSearch = () => {
+  const handleSearch = (value: string) => {
+    setSearchTerm(value)
     setPagination({ ...pagination, current: 1 })
-    fetchShippings(searchTerm)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = shippings.filter((shipping) => {
+      const searchLower = value.toLowerCase()
+      const carrierLower = shipping.carrier.toLowerCase()
+      const trackingLower = shipping.trackingNumber?.toLowerCase() || ""
+      const statusLower = shipping.status.toLowerCase()
+      const methodLower = shipping.shippingMethod.toLowerCase()
+      
+      return (
+        carrierLower.includes(searchLower) ||
+        trackingLower.includes(searchLower) ||
+        statusLower.includes(searchLower) ||
+        methodLower.includes(searchLower)
+      )
+    })
+    setFilteredShippings(filtered)
   }
 
   const handleAddShipping = () => {
@@ -483,22 +501,17 @@ const ShippingPage: React.FC = () => {
         </Title>
         <Space>
           <Input
-            placeholder="Search by carrier"
+            placeholder="Search by carrier, tracking number, status or shipping method"
             allowClear
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onPressEnter={handleSearch}
+            onChange={(e) => {
+              const value = e.target.value
+              setSearchTerm(value)
+              handleSearch(value)
+            }}
             className="w-80 rounded-md"
             prefix={<SearchOutlined />}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={handleSearch}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Search
-          </Button>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -513,12 +526,12 @@ const ShippingPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={shippings}
+          dataSource={searchTerm ? filteredShippings : shippings}
           loading={loading}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
-            total: pagination.total,
+            total: searchTerm ? filteredShippings.length : pagination.total,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} shippings</span>,

@@ -55,6 +55,7 @@ const PaymentsPage: React.FC = () => {
   const [form] = Form.useForm()
 
   const [payments, setPayments] = useState<Payment[]>([])
+  const [filteredPayments, setFilteredPayments] = useState<Payment[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -260,7 +261,18 @@ const PaymentsPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchPayments(value)
+
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = payments.filter((payment) => {
+      const searchLower = value.toLowerCase()
+      return (
+        payment.transactionId.toLowerCase().includes(searchLower) ||
+        payment.user?.userName?.toLowerCase().includes(searchLower) ||
+        payment.order?.orderNumber?.toLowerCase().includes(searchLower) ||
+        payment.gateway.toLowerCase().includes(searchLower)
+      )
+    })
+    setFilteredPayments(filtered)
   }
 
   const formatCurrency = (amount: number) => {
@@ -428,13 +440,8 @@ const PaymentsPage: React.FC = () => {
           <Search
             placeholder="Tìm kiếm theo mã giao dịch"
             allowClear
-            enterButton={
-              <Button type="primary" icon={<SearchOutlined />}>
-                Tìm kiếm
-              </Button>
-            }
             size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-80 rounded-md"
           />
         </Space>
@@ -443,12 +450,12 @@ const PaymentsPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={payments}
+          dataSource={searchTerm ? filteredPayments : payments}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredPayments.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} payments</span>,

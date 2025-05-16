@@ -41,6 +41,7 @@ const AddressPage: React.FC = () => {
   const { user, tokens } = useAuthStore()
   const [form] = Form.useForm()
   const [addresses, setAddresses] = useState<Address[]>([])
+  const [filteredAddresses, setFilteredAddresses] = useState<Address[]>([])
   const [users, setUsers] = useState<any[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
@@ -87,7 +88,7 @@ const AddressPage: React.FC = () => {
       const response = await axios.get(`${env.API_URL}/api/v1/addresses`, {
         params: {
           ...params,
-          page: pagination.page,
+          total: filteredAddresses.length > 0 ? filteredAddresses.length : pagination.totalRecord,
           limit: pagination.limit,
         },
         headers: {
@@ -210,7 +211,19 @@ const AddressPage: React.FC = () => {
 
   const handleSearch = () => {
     setPagination({ ...pagination, page: 1 })
-    fetchAddresses(searchParams)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = addresses.filter((address) => {
+      const fullNameMatch = !searchParams.fullName || 
+        address.fullName.toLowerCase().includes(searchParams.fullName.toLowerCase())
+      const cityMatch = !searchParams.city || 
+        address.city.toLowerCase().includes(searchParams.city.toLowerCase())
+      const phoneMatch = !searchParams.phoneNumber || 
+        address.phoneNumber.toLowerCase().includes(searchParams.phoneNumber.toLowerCase())
+      
+      return fullNameMatch && cityMatch && phoneMatch
+    })
+    setFilteredAddresses(filtered)
   }
 
   const handleTableChange = (newPagination: any) => {
@@ -354,7 +367,16 @@ const AddressPage: React.FC = () => {
           <Input
             placeholder="Search by Full Name"
             value={searchParams.fullName}
-            onChange={(e) => setSearchParams({ ...searchParams, fullName: e.target.value })}
+            onChange={(e) => {
+              const newValue = e.target.value
+              setSearchParams({ ...searchParams, fullName: newValue })
+              if (newValue === "") {
+                setSearchParams({ ...searchParams, fullName: "" })
+                setFilteredAddresses([])
+              } else {
+                handleSearch()
+              }
+            }}
             allowClear
             className="rounded-md w-48"
             prefix={<SearchOutlined />}
@@ -362,7 +384,16 @@ const AddressPage: React.FC = () => {
           <Input
             placeholder="Search by City"
             value={searchParams.city}
-            onChange={(e) => setSearchParams({ ...searchParams, city: e.target.value })}
+            onChange={(e) => {
+              const newValue = e.target.value
+              setSearchParams({ ...searchParams, city: newValue })
+              if (newValue === "") {
+                setSearchParams({ ...searchParams, city: "" })
+                setFilteredAddresses([])
+              } else {
+                handleSearch()
+              }
+            }}
             allowClear
             className="rounded-md w-48"
             prefix={<SearchOutlined />}
@@ -370,32 +401,33 @@ const AddressPage: React.FC = () => {
           <Input
             placeholder="Search by Phone Number"
             value={searchParams.phoneNumber}
-            onChange={(e) => setSearchParams({ ...searchParams, phoneNumber: e.target.value })}
+            onChange={(e) => {
+              const newValue = e.target.value
+              setSearchParams({ ...searchParams, phoneNumber: newValue })
+              if (newValue === "") {
+                setSearchParams({ ...searchParams, phoneNumber: "" })
+                setFilteredAddresses([])
+              } else {
+                handleSearch()
+              }
+            }}
             allowClear
             className="rounded-md w-48"
             prefix={<SearchOutlined />}
           />
-          <Button
-            type="primary"
-            icon={<SearchOutlined />}
-            onClick={handleSearch}
-            className="rounded-md bg-blue-500 hover:bg-blue-600"
-          >
-            Search
-          </Button>
         </Space>
       </div>
 
       <div className="overflow-x-auto">
         <Table
-          dataSource={addresses}
+          dataSource={filteredAddresses.length > 0 ? filteredAddresses : addresses}
           columns={columns}
           loading={loading}
           rowKey="_id"
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: filteredAddresses.length > 0 ? filteredAddresses.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} addresses</span>,

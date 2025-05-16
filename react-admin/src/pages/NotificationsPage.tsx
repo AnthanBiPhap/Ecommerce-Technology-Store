@@ -46,6 +46,7 @@ const NotificationsPage: React.FC = () => {
   const { user, tokens } = useAuthStore()
 
   const [notifications, setNotifications] = useState<Notification[]>([])
+  const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
   const [pagination, setPagination] = useState<Pagination>({ totalRecord: 0, limit: 10, page: 1 })
   const [loading, setLoading] = useState(false)
   const [users, setUsers] = useState<{ _id: string; userName: string }[]>([])
@@ -196,7 +197,21 @@ const NotificationsPage: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setPagination({ ...pagination, page: 1 })
-    fetchNotifications(value)
+    
+    // Tìm kiếm trực tiếp trên dữ liệu
+    const filtered = notifications.filter((notification) => {
+      const searchLower = value.toLowerCase()
+      const titleLower = notification.title.toLowerCase()
+      const messageLower = notification.message.toLowerCase()
+      const userLower = notification.user?.userName?.toLowerCase() || ""
+      
+      return (
+        titleLower.includes(searchLower) ||
+        messageLower.includes(searchLower) ||
+        userLower.includes(searchLower)
+      )
+    })
+    setFilteredNotifications(filtered)
   }
 
   const formatDate = (dateString: string) => {
@@ -328,15 +343,13 @@ const NotificationsPage: React.FC = () => {
       <div className="mb-6">
         <Space>
           <Search
-            placeholder="Tìm kiếm theo tiêu đề"
+            placeholder="Tìm kiếm theo tiêu đề, nội dung hoặc người nhận"
             allowClear
-            enterButton={
-              <Button type="primary" icon={<SearchOutlined />}>
-                Tìm kiếm
-              </Button>
-            }
-            size="middle"
-            onSearch={handleSearch}
+            onChange={(e) => {
+              const value = e.target.value
+              setSearchTerm(value)
+              handleSearch(value)
+            }}
             className="w-80 rounded-md"
           />
         </Space>
@@ -345,12 +358,12 @@ const NotificationsPage: React.FC = () => {
       <div className="overflow-x-auto">
         <Table
           columns={columns}
-          dataSource={notifications}
+          dataSource={searchTerm ? filteredNotifications : notifications}
           loading={loading}
           pagination={{
             current: pagination.page,
             pageSize: pagination.limit,
-            total: pagination.totalRecord,
+            total: searchTerm ? filteredNotifications.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
             showTotal: (total) => <span className="ml-0">Total {total} notifications</span>,
