@@ -78,6 +78,10 @@ const UserSchema = new Schema<Iuser>({
 
 UserSchema.pre('save', async function (next) {
     const user = this;
+    // Nếu password không được set hoặc chưa thay đổi thì bỏ qua
+    if (!user.isModified('password')) {
+        return next();
+    }
 
     if (!user.password) {
         return next(new Error("Password is required"));

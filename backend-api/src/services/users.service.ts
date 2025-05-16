@@ -54,6 +54,7 @@ const getById = async(id: string) => {
         }
         return user;
 }
+
 const create = async (payload: any) => {
     //kiểm tra xem email có tồn tại không
     const emailExist = await User.findOne({email: payload.email});
@@ -93,7 +94,7 @@ const updateById = async(id: string, payload: any) => {
     // Lọc bỏ các field rỗng ("") hoặc null/undefined
     const cleanUpdates = Object.fromEntries(
     Object.entries(payload).filter(
-      ([_, value]) => value !== "" && value !== null && value !== undefined
+      ([value]) => value !== "" && value !== null && value !== undefined
     )
   );
 

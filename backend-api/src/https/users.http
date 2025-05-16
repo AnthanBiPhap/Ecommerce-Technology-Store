@@ -4,9 +4,9 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
 
 ### get by id
-GET http://localhost:8889/api/v1/users/680b58cbcd2845ba20567174
+GET http://localhost:8889/api/v1/users/6826b336fe4cf297b2f754d9
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU3NDYyOSwiZXhwIjoxNzQ1NjYxMDI5fQ.2JmRv0djWO-ltDP-u169FZvcEpJ-8PC_F9q2i--bI5A
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODI2YjMzNmZlNGNmMjk3YjJmNzU0ZDkiLCJlbWFpbCI6InF1YW5naHVuZ0BnbWFpbC5jb20iLCJpYXQiOjE3NDczNjY3MzIsImV4cCI6MTc0NzQ1MzEzMn0.amREiAa8Z1oMMTGRTKh_DoVWsWyIdTvTBz6FMCTpjXg
 
 ### create
 
@@ -23,16 +23,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3N
 }
 
 ### update by id
-PUT http://localhost:8889/api/v1/users/6800a1756acc4bfbf1fc7759
+PUT http://localhost:8889/api/v1/users/6826b336fe4cf297b2f754d9
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2ODAwYTE3NTZhY2M0YmZiZjFmYzc3NTkiLCJlbWFpbCI6ImRhdG5ndXllbmhvdGhlQGdtYWlsLmNvbSIsImlhdCI6MTc0NTU5NDY4MCwiZXhwIjoxNzQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2Y0YzVmMDI1MTYwYjIyNGY0MTFlNjEiLCJlbWFpbCI6Im5ndXllbmhvdGhlZGF0QGdtYWlsLmNvbSIsImlhdCI6MTc0NDA5NDc0NywiZXhwIjoxNzQ0MTgxMTQ3fQ.oXb0IY9Bx2LTR9NrzWnbyrEJ4w1PMGYAlZf5EeFVuF0
 
 {
-    "fullName": "Nguyen Ho The Dat",
+    "fullName": "Quang Hung",
     "phone": "0905111222",
-    "gender": "",
-    "email": "datnguyenhothe@gmail.com",
-    "birthDay": "2005-05-05"
+    "gender": "male",
+    "email": "quanghung@gmail.com",
+    "birthDay": "2000-10-10"
 }
 
 ### delete by id
