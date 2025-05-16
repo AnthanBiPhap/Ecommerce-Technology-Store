@@ -47,14 +47,13 @@ const getAll = async(query: any) => {
 }
 
 const getById = async(id: string) => {
-    const user = await User.findById(id)
+    const user = await User.findById(id).select('-password');
         if (!user) {
             //throw new Error("user not found");
             throw createError(404, "user not found");
         }
         return user;
 }
-
 const create = async (payload: any) => {
     //kiểm tra xem email có tồn tại không
     const emailExist = await User.findOne({email: payload.email});
