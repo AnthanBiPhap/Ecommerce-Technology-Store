@@ -5,7 +5,7 @@ import User from '../../models/users.model';
 import { env } from '../../helpers/env.helper';
 import { httpStatus, sendJsonSuccess } from '../../helpers/response.helper';
 import createError from 'http-errors';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 dotenv.config();
 const router = express.Router();
