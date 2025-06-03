@@ -54,11 +54,12 @@ const getAllByTypeSchema = yup
 const createSchema = yup
   .object({
     body: yup.object({
-        product_name: yup.string().min(2).max(150).required(), // required: bắt buộc
+        product_name: yup.string().min(2).max(150).required(),
+        words: yup.string().min(0).max(255).optional(),
         description: yup.string().min(0).max(255).optional(),
         slug: yup.string().min(2).max(150).optional(),
-        price: yup.number().positive().required(), // required: không bắt buộc
-        salePrice: yup.number().positive().required(), // required: bắt buộc
+        price: yup.number().positive().required(),
+        salePrice: yup.number().positive().optional(), 
         stock: yup.number().max(100).positive().integer().optional(),
         images: yup.array().required(),
         attributes: yup.array().optional(),
@@ -87,11 +88,12 @@ const updateByIdSchema = yup
         id: yup.string().matches(/^[0-9a-fA-F]{24}$/, {message: 'ID is non-ObjectID'}).required(),
     }),
     body: yup.object({
-      product_name: yup.string().min(2).max(150).optional(), // required: bắt buộc
+      product_name: yup.string().min(2).max(150).optional(), 
+      words: yup.string().min(0).max(255).optional(),
       description: yup.string().min(0).max(255).optional(),
       slug: yup.string().min(2).max(150).optional(),
-      price: yup.number().positive().optional(), // required: không bắt buộc
-      salePrice: yup.number().positive().optional(), // required: bắt buộc
+      price: yup.number().positive().optional(), 
+      salePrice: yup.number().positive().optional(),
       stock: yup.number().max(100).positive().integer().optional(),
       images: yup.array().optional(),
       attributes: yup.array().optional(),
@@ -115,11 +117,12 @@ const deleteByIdSchema = yup
       id: yup.string().matches(/^[0-9a-fA-F]{24}$/, {message: 'ID is non-ObjectID'}).required(),
   }),
   body: yup.object({
-    product_name: yup.string().min(2).max(150).optional(), // required: bắt buộc
+    product_name: yup.string().min(2).max(150).optional(),
+    words: yup.string().min(0).max(255).optional(),
       description: yup.string().min(0).max(255).optional(),
       slug: yup.string().min(2).max(150).optional(),
-      price: yup.number().positive().optional(), // required: không bắt buộc
-      salePrice: yup.number().positive().optional(), // required: bắt buộc
+      price: yup.number().positive().optional(),
+      salePrice: yup.number().positive().optional(),
       stock: yup.number().max(100).positive().integer().optional(),
       images: yup.array().optional(),
       attributes: yup.array().optional(),

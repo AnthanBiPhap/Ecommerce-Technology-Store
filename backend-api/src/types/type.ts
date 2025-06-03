@@ -24,10 +24,11 @@ interface IAttribute{
 
 export interface IProduct{
     product_name: string,
+    words?: string,
     description: string,
     slug: string,
     price: number,
-    salePrice: number,
+    salePrice?: number,
     stock: number,
     images: string[],
     attributes: IAttribute[],

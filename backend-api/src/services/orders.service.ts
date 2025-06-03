@@ -1,5 +1,6 @@
 import Order from '../models/order.model';
 import createError from 'http-errors';
+import User from '../models/users.model';
 
 
 
@@ -14,11 +15,51 @@ const getAll = async(query: any) => {
     console.log('sortObject : ', sortObject);
 
     //tìm kiếm theo điều kiện
-    let where = {};
+    let where: any = {};
     // nếu có tìm kiếm theo orderNumber
     if(query.orderNumber && query.orderNumber.length > 0) {
         where = {...where, orderNumber: {$regex: query.orderNumber, $options: 'i'}};
     }
+    //nếu có tìm kiếm theo số điện thoại người nhận hàng
+    if(query["shippingInfor.phone"] && query["shippingInfor.phone"].length > 0) {
+        where = {...where, ["shippingInfor.phone"]: {$regex: query["shippingInfor.phone"], $options: 'i'}};
+    }
+    //nếu có tìm kiếm theo tên người nhận hàng
+    if(query["shippingInfor.recipientName"] && query["shippingInfor.recipientName"].length > 0) {
+        where = {...where, ["shippingInfor.recipientName"]: {$regex: query["shippingInfor.recipientName"], $options: 'i'}};
+    }
+    //nếu có tìm kiếm theo email user
+    if(query.email && query.email.length > 0) {
+        //tìm user theo email
+        const user = await User.findOne({email: { $regex: query.email, $options: "i"} });
+        if(user) {
+            where = {...where, user: user._id};
+            } else {
+            return {
+                products: [],
+                pagination: { totalRecord: 0, limit, page },
+            };
+        }
+    }
+    //nếu có tìm kiếm theo ngày tháng đặt hàng
+    let dateFilter: {$gte?: Date; $lte?: Date} = {};
+
+    if(query.startDate) {
+        const start = new Date(query.startDate);
+        start.setHours(0,0,0,0);
+        dateFilter.$gte = start;
+    }
+
+    if(query.endDate) {
+        const end = new Date(query.endDate);
+        end.setHours(23,59,59,999);
+        dateFilter.$lte = end;
+    }
+
+    if(Object.keys(dateFilter).length > 0) {
+        where = {...where, createdAt: dateFilter}
+    }
+
 
     const orders = await Order
     .find(where)

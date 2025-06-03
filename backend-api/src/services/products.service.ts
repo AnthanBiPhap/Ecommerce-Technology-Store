@@ -94,6 +94,7 @@ const getAll = async(query: any) => {
         const regex = new RegExp(keywords.join(".*"), "i");
         where["$or"] = [
             { product_name: regex },
+            { words: regex },
             { description: regex },
             { slug: regex },
             { "attributes.value": regex },
@@ -214,10 +215,11 @@ const create = async(payload: any) => {
     }
     const product = new Product({
         product_name: payload.product_name,
+        words: payload.words,
         description: payload.description,
         slug: buildSlug(payload.product_name),
         price: payload.price,
-        salePrice: payload.salePrice,
+        salePrice: payload.salePrice != null ? payload.salePrice : payload.price,
         stock: payload.stock ? payload.stock : 0,
         images: payload.images,
         attributes: payload.attributes,
@@ -235,8 +237,7 @@ const create = async(payload: any) => {
     });
     // lưu dữ liệu
     await product.save();
-    return product; // trả về kết quả để truy xuất dữ liệu trong controller
-    
+    return product; // trả về kết quả để truy xuất dữ liệu trong controller 
 }
 // update by ID
 const updateById = async(id: string, payload: any) => {

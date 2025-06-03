@@ -12,5 +12,6 @@ export const env = {
     MONGODB_URI: process.env.MONGODB_URI,
     JWT_SECRET: process.env.JWT_SECRET,
     CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
+    GMAIL_USER: process.env.GMAIL_USER || "",
     GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || ""
 }

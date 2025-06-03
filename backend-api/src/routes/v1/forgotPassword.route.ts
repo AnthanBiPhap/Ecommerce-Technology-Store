@@ -18,45 +18,79 @@ function generatePassword(length: number = 6) {
     }
     return password;
 }
-
+console.log('=== DEBUG FORGOT PASSWORD ===');
 router.post('/forgot-password', async(req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = req.body;
-        //kiểm tra xem email có trong users không
-        const user = await User.findOne({email});
-        if(!user) {
-            return next(createError(400, 'email not found, please try again with other email'))
+        
+        // Kiểm tra email
+        console.log('Received email:', email);
+        if (!email || !email.trim()) {
+            return next(createError(400, 'Email is required'));
         }
-        //Tạo mật khẩu mới
+
+        // Tìm user
+        console.log('2. Finding user in database...');
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log('2.1. User not found');
+            return next(createError(400, 'Email not found'));
+        }
+        console.log('2.2. User found:', user.email);
+
+        // Tạo mật khẩu mới
         const newPassword = generatePassword();
+        console.log('New password generated:', newPassword);
+        
+        // Hash mật khẩu
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        //lưu mật khẩu vào database
-        user.password = newPassword;
+        console.log('Hashed password:', hashedPassword);
+        
+        // Lưu mật khẩu mới
+        user.password = hashedPassword; // Lưu mật khẩu đã hash, không phải mật khẩu gốc
         await user.save();
-        //gửi Email với nodemailer
+        console.log('Password updated successfully');
+        
+        // Gửi email
+        console.log('3. Sending email...');
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false, // true for 465, false for other ports
+            service: 'gmail',
             auth: {
-                user: 'nguyenhothedat88@gmail.com',
+                user: env.GMAIL_USER,
                 pass: env.GMAIL_APP_PASSWORD
-            },
-        } as nodemailer.TransportOptions);
-        //tạo nội dung email
+            }
+        });
+
+        // Kiểm tra thông tin email
+        console.log('Gmail config:', {
+            user: env.GMAIL_USER,
+            hasPassword: !!env.GMAIL_APP_PASSWORD
+        });
+
         const mailOptions = {
-            from: 'nguyenhothedat88@gmail.com',
+            from: env.GMAIL_USER, // Sử dụng biến môi trường
             to: email,
             subject: 'Cấp lại mật khẩu',
-            text: `Mật khẩu mới của bạn là : ${newPassword}`,
+            text: `Mật khẩu mới của bạn là: ${newPassword}
+            Vui lòng thay đổi mật khẩu sau khi đăng nhập.
+            Lưu ý: Đây là email tự động, vui lòng không trả lời email này.`,
         };
-        //gửi email
+
+        // Gửi email
         const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
-        // Phản hồi về client
-        sendJsonSuccess(res, info.response, httpStatus.OK.statusCode, httpStatus.OK.message);    
+        console.log('Email sent:', info.response);
+        
+        // Phản hồi client
+        sendJsonSuccess(res, {
+            message: 'Password reset email has been sent successfully'
+        }, httpStatus.OK.statusCode, httpStatus.OK.message);
     } catch (error) {
-        next(error);
+        console.error('Error in forgot-password:', error);
+        if (error instanceof Error) {
+            next(createError(500, error.message));
+        } else {
+            next(createError(500, 'Internal server error'));
+        }
     }
 });
 

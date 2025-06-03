@@ -487,7 +487,7 @@ const DashboardPage: React.FC = () => {
       title: 'Khách hàng',
       dataIndex: 'user',
       key: 'user',
-      render: (user: any) => user.fullName,
+      render: (user: any) => user?.fullName || 'Không xác định',
     },
     {
       title: 'Tổng tiền',

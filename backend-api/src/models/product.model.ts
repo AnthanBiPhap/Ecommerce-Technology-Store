@@ -29,7 +29,7 @@ const productSchema = new Schema<IProduct>({
     salePrice: {
         type: Number,
         min: 0,
-        require: true
+        require: false
     },
     stock: {
         type: Number,

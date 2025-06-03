@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Button, Space, Modal, Form, Input, Select, message, Typography } from 'antd'
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { PlusOutlined, EditOutlined, DeleteOutlined, MailOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { useAuthStore } from '../stores/useAuthStore'
 import { useNavigate } from 'react-router-dom'
@@ -38,7 +38,9 @@ const UserPage: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('')
 
   const isAdmin = user?.roles === 'admin'
 
@@ -104,6 +106,28 @@ const UserPage: React.FC = () => {
     setIsModalOpen(true)
   }
 
+  const handleForgotPassword = async (email: string) => {
+    try {
+      if (!tokens?.accessToken) {
+        message.error('Vui lòng đăng nhập để tiếp tục')
+        navigate('/login')
+        return
+      }
+
+      setLoading(true)
+      await axios.post(`${env.API_URL}/api/v1/forgot-password`, { email }, {
+        headers: { Authorization: `Bearer ${tokens.accessToken}` },
+      })
+
+      message.success('Mật khẩu mới đã được gửi đến email của bạn')
+      setIsForgotPasswordModalOpen(false)
+    } catch (error: any) {
+      handleError(error, 'Lỗi khi gửi yêu cầu cấp lại mật khẩu')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleDeleteUser = (userId: string) => {
     Modal.confirm({
       title: 'Xác nhận xóa',
@@ -148,7 +172,7 @@ const UserPage: React.FC = () => {
 
       if (selectedUser) {
         const updateData = { ...values }
-        if (!values.password) delete updateData.password
+        // if (!values.password) delete updateData.password
         if (!values.avatarUrl) delete updateData.avatarUrl
 
         await axios.put(`${env.API_URL}/api/v1/users/${selectedUser._id}`, updateData, {
@@ -253,6 +277,17 @@ const UserPage: React.FC = () => {
               className="text-red-500 hover:text-red-700"
             >
               Delete
+            </Button>
+            <Button
+              type="text"
+              icon={<MailOutlined />}
+              onClick={() => {
+                setForgotPasswordEmail(record.email)
+                setIsForgotPasswordModalOpen(true)
+              }}
+              className="text-blue-500 hover:text-blue-700"
+            >
+              Forgot Password
             </Button>
           </Space>
         ) : null,
@@ -388,6 +423,20 @@ const UserPage: React.FC = () => {
             <Input className="rounded-md" />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="Forgot Password"
+        open={isForgotPasswordModalOpen}
+        onOk={() => handleForgotPassword(forgotPasswordEmail)}
+        onCancel={() => setIsForgotPasswordModalOpen(false)}
+        okButtonProps={{ loading: saving, className: "rounded-md bg-blue-500 hover:bg-blue-600" }}
+        cancelButtonProps={{ disabled: saving, className: "rounded-md" }}
+        width={400}
+        className="p-4"
+      >
+        <p>Email: {forgotPasswordEmail}</p>
+        <p className="mt-2">Một mật khẩu mới sẽ được gửi đến email này. Vui lòng kiểm tra email của bạn.</p>
       </Modal>
     </div>
   )
