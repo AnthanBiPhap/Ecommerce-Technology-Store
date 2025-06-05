@@ -365,40 +365,7 @@ const OrdersPage: React.FC = () => {
       width: 150,
       render: (orderNumber: string) => <span className="font-medium">{orderNumber}</span>,
     },
-    {
-      title: "Sản phẩm",
-      dataIndex: "products",
-      key: "products",
-      render: (products: any[]) => (
-        <div className="flex flex-col gap-1">
-          {products?.map((product, index) => {
-            const productName = product?.product?.product_name || 'Không xác định'
-            const price = product?.currentSalePrice || product?.currentPrice || 0
-            return (
-              <div key={index} className="flex items-center justify-between p-2 border-b last:border-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{productName}</span>
-                  <span className="text-sm text-gray-600">x{product.quantity}</span>
-                </div>
-                <div className="text-sm">
-                  <div className="text-gray-600">
-                    {product.currentSalePrice ? (
-                      <>
-                        <span className="line-through mr-2">{formatCurrency(product.currentPrice)}</span>
-                        <span className="text-red-500">{formatCurrency(product.currentSalePrice)}</span>
-                      </>
-                    ) : (
-                      <span>{formatCurrency(product.currentPrice)}</span>
-                    )}
-                  </div>
-                  <span className="text-blue-600 font-medium">Tổng: {formatCurrency((product.currentSalePrice || product.currentPrice) * product.quantity)}</span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      ),
-    },
+
     {
       title: "Tổng Tiền",
       dataIndex: "totalAmount",
@@ -563,23 +530,25 @@ const OrdersPage: React.FC = () => {
               <div className="p-4 bg-gray-50">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-medium text-lg mb-3">Thông tin đơn hàng</h4>
+                    <h4 className="font-medium text-lg mb-3">Thông tin thanh toán</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="font-medium">Phí vận chuyển:</span>
-                        <span className="font-medium">{formatCurrency(record.shippingFee)}</span>
+                        <span className="font-medium">Phương thức thanh toán:</span>
+                        <span className="font-medium">
+                          {record.paymentMethod === 'credit_card' ? 'Thẻ tín dụng' : 
+                           record.paymentMethod === 'paypal' ? 'PayPal' : 'COD'}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="font-medium">Thuế:</span>
-                        <span className="font-medium">{formatCurrency(record.tax)}</span>
+                        <span className="font-medium">Trạng thái thanh toán:</span>
+                        <span className="font-medium">
+                          {record.paymentStatus === 'pending' ? 'Chờ thanh toán' : 
+                           record.paymentStatus === 'paid' ? 'Đã thanh toán' : 'Thất bại'}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="font-medium">Giảm giá:</span>
-                        <span className="font-medium">{formatCurrency(record.discount)}</span>
-                      </div>
-                      <div className="flex justify-between font-semibold">
-                        <span>Tổng cộng:</span>
-                        <span className="text-blue-600">{formatCurrency(record.totalAmount)}</span>
+                        <span className="font-medium">Tổng tiền:</span>
+                        <span className="font-semibold text-blue-600">{formatCurrency(record.totalAmount)}</span>
                       </div>
                     </div>
                   </div>
@@ -670,48 +639,7 @@ const OrdersPage: React.FC = () => {
               </div>
             </div>
             
-            <Divider orientation="left" className="mt-2">Sản phẩm</Divider>
-            <div className="space-y-3 mt-4">
-              {selectedOrder?.products?.map((item, index) => (
-                <div key={index} className="border-b pb-3 last:border-b-0">
-                  <div className="flex gap-4">
-                    <div className="w-16 h-16 bg-white border rounded-md overflow-hidden">
-                      {item.product?.images?.[0] ? (
-                        <img 
-                          src={item.product.images[0]} 
-                          alt={item.product.product_name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                          <ShoppingCartOutlined className="text-gray-400 text-xl" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium">{item.product?.product_name || 'Sản phẩm không xác định'}</div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <span>Số lượng: {item.quantity}</span>
-                        <span>•</span>
-                        <span>
-                          {item.currentSalePrice ? (
-                            <>
-                              <span className="line-through mr-1">{formatCurrency(item.currentPrice)}</span>
-                              <span className="text-red-500">{formatCurrency(item.currentSalePrice)}</span>
-                            </>
-                          ) : (
-                            <span>{formatCurrency(item.currentPrice)}</span>
-                          )}
-                        </span>
-                      </div>
-                      <div className="font-medium text-blue-600">
-                        Thành tiền: {formatCurrency((item.currentSalePrice || item.currentPrice) * item.quantity)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
