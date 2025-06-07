@@ -559,58 +559,150 @@ const ShippingPage: React.FC = () => {
         <Form form={form} layout="vertical" className="mt-4">
           <Form.Item
             name="carrier"
-            label="Carrier"
+            label="Đơn Vị Vận Chuyển"
             rules={[
-              { required: true, message: "Please enter carrier!" },
-              { max: 100, message: "Maximum 100 characters!" },
+              { required: true, message: "Vui lòng nhập đơn vị vận chuyển" },
+              { max: 100, message: "Đơn vị vận chuyển không được vượt quá 100 ký tự" }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập đơn vị vận chuyển" />
           </Form.Item>
+
           <Form.Item
             name="trackingNumber"
-            label="Tracking Number"
-            rules={[{ max: 100, message: "Maximum 100 characters!" }]}
+            label="Mã Theo Dõi"
+            rules={[
+              { max: 100, message: "Mã theo dõi không được vượt quá 100 ký tự" }
+            ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập mã theo dõi (nếu có)" />
           </Form.Item>
-          <Form.Item name="status" label="Status" rules={[{ required: true, message: "Please select status!" }]}>
-            <Select className="rounded-md">
-              <Option value="processing">Processing</Option>
-              <Option value="shipped">Shipped</Option>
-              <Option value="delivered">Delivered</Option>
-              <Option value="failed">Failed</Option>
+
+          <Form.Item 
+            name="status" 
+            label="Trạng Thái" 
+            rules={[
+              { required: true, message: "Vui lòng chọn trạng thái" },
+              { 
+                type: "enum",
+                enum: ["processing", "shipped", "delivered", "failed"],
+                message: "Trạng thái không hợp lệ"
+              }
+            ]}
+            validateFirst
+            initialValue="processing"
+          >
+            <Select className="rounded-md" placeholder="Chọn trạng thái">
+              <Option value="processing">Đang Xử Lý</Option>
+              <Option value="shipped">Đang Giao Hàng</Option>
+              <Option value="delivered">Đã Giao Hàng</Option>
+              <Option value="failed">Giao Hàng Thất Bại</Option>
             </Select>
           </Form.Item>
-          <Form.Item name="estimatedDelivery" label="Estimated Delivery">
-            <DatePicker showTime style={{ width: "100%" }} className="rounded-md" />
+
+          <Form.Item 
+            name="estimatedDelivery" 
+            label="Ngày Giao Hàng Dự Kiến"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  if (value.isBefore(dayjs())) {
+                    return Promise.reject(new Error('Ngày giao hàng dự kiến phải lớn hơn ngày hiện tại'));
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}
+            validateFirst
+          >
+            <DatePicker 
+              showTime 
+              style={{ width: "100%" }} 
+              className="rounded-md" 
+              placeholder="Chọn ngày giao hàng dự kiến"
+            />
           </Form.Item>
-          <Form.Item name="actualDelivery" label="Actual Delivery">
-            <DatePicker showTime style={{ width: "100%" }} className="rounded-md" />
+
+          <Form.Item 
+            name="actualDelivery" 
+            label="Ngày Giao Hàng Thực Tế"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  const estimatedDelivery = form.getFieldValue('estimatedDelivery');
+                  if (estimatedDelivery && value.isBefore(estimatedDelivery)) {
+                    return Promise.reject(new Error('Ngày giao hàng thực tế không được trước ngày dự kiến'));
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}
+            validateFirst
+          >
+            <DatePicker 
+              showTime 
+              style={{ width: "100%" }} 
+              className="rounded-md" 
+              placeholder="Chọn ngày giao hàng thực tế"
+            />
           </Form.Item>
+
           <Form.Item
             name="shippingMethod"
-            label="Shipping Method"
+            label="Phương Thức Vận Chuyển"
             rules={[
-              { required: true, message: "Please enter shipping method!" },
-              { max: 50, message: "Maximum 50 characters!" },
+              { required: true, message: "Vui lòng nhập phương thức vận chuyển" },
+              { max: 50, message: "Phương thức vận chuyển không được vượt quá 50 ký tự" }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập phương thức vận chuyển" />
           </Form.Item>
+
           <Form.Item
             name="shippingFee"
-            label="Shipping Fee"
-            rules={[{ required: true, message: "Please enter shipping fee!" }]}
+            label="Phí Vận Chuyển"
+            rules={[
+              { required: true, message: "Vui lòng nhập phí vận chuyển" },
+              { type: 'number', min: 0, message: "Phí vận chuyển phải lớn hơn hoặc bằng 0" }
+            ]}
+            validateFirst
+            initialValue={0}
           >
-            <InputNumber min={0} style={{ width: "100%" }} className="rounded-md" />
+            <InputNumber 
+              min={0} 
+              style={{ width: "100%" }} 
+              className="rounded-md" 
+              placeholder="Nhập phí vận chuyển"
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value!.replace(/\$\s?|(,*)/g, '')}
+            />
           </Form.Item>
-          <Form.Item name="order" label="Order">
-            <Select showSearch optionFilterProp="children" className="rounded-md" allowClear>
-              <Option value={null}>No Order</Option>
+
+          <Form.Item 
+            name="order" 
+            label="Đơn Hàng"
+            rules={[
+              { required: true, message: "Vui lòng chọn đơn hàng" }
+            ]}
+            validateFirst
+          >
+            <Select 
+              showSearch 
+              optionFilterProp="children" 
+              className="rounded-md" 
+              placeholder="Chọn đơn hàng"
+              filterOption={(input, option) =>
+                (option?.children as unknown as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
               {orders.map((order) => (
                 <Option key={order._id} value={order._id}>
-                  {`${order.orderNumber} - ${order.shippingInfor?.recipientName || order.user?.fullName || "Unknown User"}`}
+                  {`${order.orderNumber} - ${order.shippingInfor?.recipientName || order.user?.fullName || "Không xác định"}`}
                 </Option>
               ))}
             </Select>

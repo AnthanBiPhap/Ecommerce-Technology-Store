@@ -815,7 +815,13 @@ const ProductsPage: React.FC = () => {
                   label="Giá Gốc"
                   rules={[
                     { required: true, message: "Vui lòng nhập giá!" },
-                    { type: "number", min: 0, message: "Giá phải lớn hơn hoặc bằng 0!" },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "Giá phải lớn hơn 0!",
+                      validator: (_, value) =>
+                        value > 0 ? Promise.resolve() : Promise.reject(new Error('Giá phải lớn hơn 0!')),
+                    },
                   ]}
                 >
                   <InputNumber
@@ -832,7 +838,13 @@ const ProductsPage: React.FC = () => {
                   label="Giá Khuyến Mãi"
                   rules={[
                     { required: true, message: "Vui lòng nhập giá khuyến mãi!" },
-                    { type: "number", min: 0, message: "Giá khuyến mãi phải lớn hơn hoặc bằng 0!" },
+                    {
+                      type: "number",
+                      min: 1,
+                      message: "Giá khuyến mãi phải lớn hơn 0!",
+                      validator: (_, value) =>
+                        value > 0 ? Promise.resolve() : Promise.reject(new Error('Giá khuyến mãi phải lớn hơn 0!')),
+                    },
                   ]}
                 >
                   <InputNumber
@@ -849,10 +861,17 @@ const ProductsPage: React.FC = () => {
                   label="Số Lượng"
                   rules={[
                     { required: true, message: "Vui lòng nhập số lượng!" },
-                    { type: "number", min: 0, max: 100, message: "Số lượng phải từ 0 đến 100!" },
+                    {
+                      type: "number",
+                      min: 1,
+                      max: 100,
+                      message: "Số lượng phải từ 1 đến 100!",
+                      validator: (_, value) =>
+                        value > 0 ? Promise.resolve() : Promise.reject(new Error('Số lượng phải lớn hơn 0!')),
+                    },
                   ]}
                 >
-                  <InputNumber min={0} max={100} className="w-full rounded-md" />
+                  <InputNumber min={1} max={100} className="w-full rounded-md" />
                 </Form.Item>
               </div>
 

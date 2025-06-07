@@ -181,7 +181,9 @@ const PaymentMethodsPage: React.FC = () => {
         params: { page: 1, limit: 100 },
       })
       setUsers(res.data.data.users)
-    } catch {}
+    } catch (error: any) {
+      handleError(error, "Lỗi khi lấy danh sách người dùng")
+    }
   }
 
   const handleModalOk = async () => {
@@ -551,9 +553,17 @@ const PaymentMethodsPage: React.FC = () => {
             <Form.Item
               name="type"
               label="Loại"
-              rules={[{ required: true, message: "Vui lòng chọn loại phương thức thanh toán" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn loại phương thức thanh toán!" },
+                { 
+                  type: "enum",
+                  enum: ["credit_card", "paypal", "bank_account"],
+                  message: "Loại phương thức thanh toán không hợp lệ!"
+                }
+              ]}
+              validateFirst
             >
-              <Select className="rounded-md">
+              <Select className="rounded-md" placeholder="Chọn loại phương thức thanh toán">
                 <Option value="credit_card">Thẻ Tín Dụng</Option>
                 <Option value="paypal">PayPal</Option>
                 <Option value="bank_account">Tài Khoản Ngân Hàng</Option>
@@ -563,9 +573,13 @@ const PaymentMethodsPage: React.FC = () => {
             <Form.Item
               name="provider"
               label="Nhà Cung Cấp"
-              rules={[{ required: true, message: "Vui lòng nhập nhà cung cấp" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập nhà cung cấp!" },
+                { max: 50, message: "Tên nhà cung cấp không được vượt quá 50 ký tự!" }
+              ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập tên nhà cung cấp" />
             </Form.Item>
           </div>
 
@@ -573,18 +587,38 @@ const PaymentMethodsPage: React.FC = () => {
             <Form.Item
               name="accountNumber"
               label="Số Tài Khoản"
-              rules={[{ required: true, message: "Vui lòng nhập số tài khoản" }]}
+              rules={[
+                { max: 50, message: "Số tài khoản không được vượt quá 50 ký tự!" }
+              ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập số tài khoản" />
             </Form.Item>
 
-            <Form.Item name="expiryDate" label="Ngày Hết Hạn">
+            <Form.Item 
+              name="expiryDate" 
+              label="Ngày Hết Hạn"
+              rules={[
+                { 
+                  type: "date",
+                  message: "Ngày hết hạn không hợp lệ!"
+                }
+              ]}
+              validateFirst
+            >
               <Input type="date" className="rounded-md" />
             </Form.Item>
           </div>
 
-          <Form.Item name="cardholderName" label="Tên Chủ Thẻ">
-            <Input className="rounded-md" />
+          <Form.Item 
+            name="cardholderName" 
+            label="Tên Chủ Thẻ"
+            rules={[
+              { max: 100, message: "Tên chủ thẻ không được vượt quá 100 ký tự!" }
+            ]}
+            validateFirst
+          >
+            <Input className="rounded-md" placeholder="Nhập tên chủ thẻ" />
           </Form.Item>
 
           <Divider orientation="left">Địa Chỉ Thanh Toán</Divider>
@@ -593,43 +627,80 @@ const PaymentMethodsPage: React.FC = () => {
             <Form.Item
               name="billingAddress.fullName"
               label="Họ Tên"
-              rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+              rules={[
+                { max: 100, message: "Họ tên không được vượt quá 100 ký tự!" }
+              ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập họ tên" />
             </Form.Item>
 
             <Form.Item
               name="billingAddress.country"
               label="Quốc Gia"
-              rules={[{ required: true, message: "Vui lòng nhập quốc gia" }]}
+              rules={[
+                { max: 100, message: "Tên quốc gia không được vượt quá 100 ký tự!" }
+              ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập tên quốc gia" />
             </Form.Item>
           </div>
 
           <Form.Item
             name="billingAddress.addressLine1"
             label="Địa Chỉ 1"
-            rules={[{ required: true, message: "Vui lòng nhập địa chỉ 1" }]}
+            rules={[
+              { max: 255, message: "Địa chỉ không được vượt quá 255 ký tự!" }
+            ]}
+            validateFirst
           >
-            <TextArea rows={2} className="rounded-md" />
+            <TextArea rows={2} className="rounded-md" placeholder="Nhập địa chỉ dòng 1" />
           </Form.Item>
 
-          <Form.Item name="billingAddress.addressLine2" label="Địa Chỉ 2">
-            <TextArea rows={2} className="rounded-md" />
+          <Form.Item 
+            name="billingAddress.addressLine2" 
+            label="Địa Chỉ 2"
+            rules={[
+              { max: 255, message: "Địa chỉ không được vượt quá 255 ký tự!" }
+            ]}
+            validateFirst
+          >
+            <TextArea rows={2} className="rounded-md" placeholder="Nhập địa chỉ dòng 2 (nếu có)" />
           </Form.Item>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Form.Item name="billingAddress.city" label="Thành phố">
-              <Input className="rounded-md" />
+            <Form.Item 
+              name="billingAddress.city" 
+              label="Thành phố"
+              rules={[
+                { max: 100, message: "Tên thành phố không được vượt quá 100 ký tự!" }
+              ]}
+              validateFirst
+            >
+              <Input className="rounded-md" placeholder="Nhập tên thành phố" />
             </Form.Item>
 
-            <Form.Item name="billingAddress.state" label="Tỉnh/Bang">
-              <Input className="rounded-md" />
+            <Form.Item 
+              name="billingAddress.state" 
+              label="Tỉnh/Bang"
+              rules={[
+                { max: 100, message: "Tên tỉnh/bang không được vượt quá 100 ký tự!" }
+              ]}
+              validateFirst
+            >
+              <Input className="rounded-md" placeholder="Nhập tên tỉnh/bang" />
             </Form.Item>
 
-            <Form.Item name="billingAddress.postalCode" label="Mã Bưu Chính">
-              <Input className="rounded-md" />
+            <Form.Item 
+              name="billingAddress.postalCode" 
+              label="Mã Bưu Chính"
+              rules={[
+                { max: 20, message: "Mã bưu chính không được vượt quá 20 ký tự!" }
+              ]}
+              validateFirst
+            >
+              <Input className="rounded-md" placeholder="Nhập mã bưu chính" />
             </Form.Item>
           </div>
 
@@ -639,7 +710,10 @@ const PaymentMethodsPage: React.FC = () => {
             <Form.Item
               name="user"
               label="Người Sử Dụng"
-              rules={[{ required: true, message: "Vui lòng chọn người dùng" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn người dùng!" }
+              ]}
+              validateFirst
             >
               <Select
                 showSearch
@@ -660,8 +734,28 @@ const PaymentMethodsPage: React.FC = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item name="metadata" label="Điều Kiện Khác">
-              <Select className="rounded-md">
+            <Form.Item 
+              name="metadata" 
+              label="Điều Kiện Khác"
+              rules={[
+                { 
+                  validator: (_, value) => {
+                    if (!value) return Promise.resolve();
+                    try {
+                      const metadata = typeof value === 'string' ? JSON.parse(value) : value;
+                      if (typeof metadata !== 'object') {
+                        return Promise.reject(new Error('Metadata phải là một object!'));
+                      }
+                      return Promise.resolve();
+                    } catch (e) {
+                      return Promise.reject(new Error('Metadata không hợp lệ!'));
+                    }
+                  }
+                }
+              ]}
+              validateFirst
+            >
+              <Select className="rounded-md" placeholder="Chọn điều kiện">
                 <Option value={JSON.stringify({})}>Không có</Option>
                 <Option value={JSON.stringify({ onlyDomestic: true })}>Chỉ dùng nội địa</Option>
                 <Option value={JSON.stringify({ priority: "international" })}>Ưu tiên thẻ quốc tế</Option>
@@ -669,7 +763,15 @@ const PaymentMethodsPage: React.FC = () => {
             </Form.Item>
           </div>
 
-          <Form.Item name="isDefault" label="Mặc Định" valuePropName="checked">
+          <Form.Item 
+            name="isDefault" 
+            label="Mặc Định" 
+            valuePropName="checked"
+            rules={[
+              { required: true, message: "Vui lòng chọn trạng thái mặc định!" }
+            ]}
+            validateFirst
+          >
             <Switch className="bg-gray-300" />
           </Form.Item>
         </Form>

@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Table, Button, Space, Modal, Form, Input, message, Image, Switch, Typography, InputNumber } from "antd"
+import { Table, Button, Space, Modal, Form, Input, message, Image, Switch, Typography, InputNumber, Select } from "antd"
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, AppstoreOutlined } from "@ant-design/icons"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
@@ -18,6 +18,7 @@ interface Category {
   category_name: string
   description: string
   slug: string
+  parentId: string | null
   level: number
   imageUrl: string
   isActive: boolean
@@ -154,6 +155,12 @@ const CategoryPage: React.FC = () => {
       setSaving(true)
       const values = await form.validateFields()
 
+      // Validate slug format
+      const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+      if (!slugRegex.test(values.slug)) {
+        throw new Error("Slug chỉ được chứa chữ thường, số và dấu gạch ngang")
+      }
+
       if (selectedCategory) {
         await axios.put(`${env.API_URL}/api/v1/categories/${selectedCategory._id}`, values, {
           headers: { Authorization: `Bearer ${tokens.accessToken}` },
@@ -171,7 +178,30 @@ const CategoryPage: React.FC = () => {
       setIsModalOpen(false)
       fetchCategories(searchTerm)
     } catch (error: any) {
-      handleError(error, "Lỗi khi xử lý danh mục")
+      if (error.response?.data?.errors) {
+        // Xử lý lỗi validate từ backend và hiển thị dưới từng trường
+        const backendErrors = error.response.data.errors
+        const formErrors: { [key: string]: { errors: string[] } } = {}
+        
+        Object.keys(backendErrors).forEach(field => {
+          formErrors[field] = {
+            errors: Array.isArray(backendErrors[field]) 
+              ? backendErrors[field] 
+              : [backendErrors[field]]
+          }
+        })
+        
+        form.setFields(
+          Object.keys(formErrors).map(field => ({
+            name: field,
+            errors: formErrors[field].errors
+          }))
+        )
+      } else if (error.message) {
+        message.error(error.message)
+      } else {
+        message.error("Lỗi khi xử lý danh mục")
+      }
     } finally {
       setSaving(false)
     }
@@ -386,9 +416,14 @@ const CategoryPage: React.FC = () => {
               { required: true, message: "Vui lòng nhập tên danh mục" },
               { min: 2, message: "Tên danh mục phải có ít nhất 2 ký tự" },
               { max: 50, message: "Tên danh mục không được vượt quá 50 ký tự" },
+              { 
+                pattern: /^[a-zA-ZÀ-ỹ\s]+$/,
+                message: "Tên danh mục chỉ được chứa chữ cái và khoảng trắng"
+              }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập tên danh mục" />
           </Form.Item>
 
           <Form.Item
@@ -396,10 +431,11 @@ const CategoryPage: React.FC = () => {
             label="Mô Tả"
             rules={[
               { required: true, message: "Vui lòng nhập mô tả" },
-              { max: 500, message: "Mô tả không được vượt quá 500 ký tự" },
+              { max: 500, message: "Mô tả không được vượt quá 500 ký tự" }
             ]}
+            validateFirst
           >
-            <TextArea rows={4} className="rounded-md" />
+            <TextArea rows={4} className="rounded-md" placeholder="Nhập mô tả danh mục" />
           </Form.Item>
 
           <Form.Item
@@ -409,21 +445,56 @@ const CategoryPage: React.FC = () => {
               { required: true, message: "Vui lòng nhập slug" },
               { min: 2, message: "Slug phải có ít nhất 2 ký tự" },
               { max: 50, message: "Slug không được vượt quá 50 ký tự" },
+              { 
+                pattern: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                message: "Slug chỉ được chứa chữ thường, số và dấu gạch ngang"
+              }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập slug danh mục" />
           </Form.Item>
 
-          <Form.Item name="level" label="Level" rules={[{ required: true, message: "Vui lòng nhập level" }]}>
-            <InputNumber min={0} className="w-full rounded-md" />
+          <Form.Item
+            name="parentId"
+            label="Danh Mục Cha"
+          >
+            <Select
+              allowClear
+              placeholder="Chọn danh mục cha (nếu có)"
+              className="rounded-md"
+              options={categories
+                .filter(cat => !selectedCategory || cat._id !== selectedCategory._id)
+                .map(cat => ({
+                  value: cat._id,
+                  label: cat.category_name
+                }))}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="level"
+            label="Cấp Độ"
+            rules={[{ required: true, message: "Vui lòng nhập cấp độ" }]}
+            validateFirst
+          >
+            <InputNumber 
+              min={0} 
+              className="w-full rounded-md" 
+              placeholder="Nhập cấp độ danh mục"
+            />
           </Form.Item>
 
           <Form.Item
             name="imageUrl"
             label="Ảnh Đại Diện"
-            rules={[{ required: true, message: "Vui lòng nhập URL ảnh" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập URL ảnh" },
+              { max: 255, message: "URL ảnh không được vượt quá 255 ký tự" }
+            ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập URL ảnh đại diện" />
           </Form.Item>
 
           {form.getFieldValue("imageUrl") && (
@@ -444,6 +515,7 @@ const CategoryPage: React.FC = () => {
             label="Trạng Thái"
             valuePropName="checked"
             rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
+            validateFirst
           >
             <Switch checkedChildren="Hoạt động" unCheckedChildren="Không hoạt động" className="bg-gray-300" />
           </Form.Item>

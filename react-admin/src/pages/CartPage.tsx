@@ -257,38 +257,41 @@ const CartPage: React.FC = () => {
       if (selectedProducts.length === 0) {
         throw new Error("Vui lòng chọn ít nhất một sản phẩm")
       }
+
+      // Validate quantity for each product
       for (const p of selectedProducts) {
         if (!p.quantity || p.quantity <= 0) {
-          throw new Error(`Số lượng sản phẩm "${p.name}" phải lớn hơn 0`)
+          throw new Error(`Số lượng sản phẩm "${p.product_name}" phải lớn hơn 0`)
         }
       }
 
-      const calculatedTotal = selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0)
-      const totalAmount = Number.parseFloat(values.totalAmount)
-      if (isNaN(totalAmount) || totalAmount <= 0) {
-        throw new Error("Tổng tiền phải là số dương")
-      }
-      if (Math.abs(calculatedTotal - totalAmount) > 0.01) {
-        throw new Error("Tổng tiền không khớp với tổng giá trị các sản phẩm")
-      }
+      // Calculate total amount for each item and cart
+      const items = selectedProducts.map((p) => {
+        const currentPrice = p.price
+        const currentSalePrice = p.sale_price || p.price
+        const quantity = p.quantity
+        const itemTotalAmount = currentSalePrice * quantity
 
-      const items = selectedProducts.map((p) => ({
-        product: {
-          _id: p.productId,
-          product_name: p.product_name,
-          price: p.price,
-          sale_price: p.sale_price,
-        },
-        quantity: p.quantity,
-        currentPrice: p.price,
-        currentSalePrice: p.sale_price || p.price,
-        totalAmount: p.price * p.quantity,
-      }))
+        return {
+          product: {
+            _id: p.productId,
+            product_name: p.product_name,
+            price: p.price,
+            sale_price: p.sale_price
+          },
+          quantity,
+          currentPrice,
+          currentSalePrice,
+          totalAmount: itemTotalAmount
+        }
+      })
+
+      const totalAmount = items.reduce((sum, item) => sum + item.totalAmount, 0)
 
       const data = {
         user: values.user,
         items,
-        totalAmount,
+        totalAmount
       }
 
       if (selectedCart) {
@@ -306,11 +309,27 @@ const CartPage: React.FC = () => {
       setIsModalOpen(false)
       fetchCarts(searchTerm)
     } catch (error: any) {
-      console.error("Error:", error)
-      if (error.message) {
+      if (error.response?.data?.errors) {
+        // Xử lý lỗi validate từ backend và hiển thị dưới từng trường
+        const backendErrors = error.response.data.errors
+        const formErrors: { [key: string]: { errors: string[] } } = {}
+        
+        Object.keys(backendErrors).forEach(field => {
+          formErrors[field] = {
+            errors: Array.isArray(backendErrors[field]) 
+              ? backendErrors[field] 
+              : [backendErrors[field]]
+          }
+        })
+        
+        form.setFields(
+          Object.keys(formErrors).map(field => ({
+            name: field,
+            errors: formErrors[field].errors
+          }))
+        )
+      } else if (error.message) {
         message.error(error.message)
-      } else if (error.response?.data?.message) {
-        message.error(error.response.data.message)
       } else {
         message.error("Lỗi khi xử lý giỏ hàng")
       }
@@ -637,11 +656,22 @@ const CartPage: React.FC = () => {
           <Form.Item
             name="totalAmount"
             label="Tổng Tiền"
-            rules={[{ required: true, message: "Vui lòng nhập tổng tiền" }]}
-            initialValue={selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0)}
+            rules={[
+              { required: true, message: "Vui lòng nhập tổng tiền" },
+              { type: 'number', min: 0, message: "Tổng tiền phải lớn hơn hoặc bằng 0" }
+            ]}
+            initialValue={selectedProducts.reduce((sum, item) => {
+              const salePrice = item.sale_price || item.price
+              return sum + (salePrice * item.quantity)
+            }, 0)}
           >
             <div className="flex items-center w-full rounded-md bg-gray-50 p-2">
-              <span className="flex-1 text-right">{formatCurrency(selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0))}</span>
+              <span className="flex-1 text-right">
+                {formatCurrency(selectedProducts.reduce((sum, item) => {
+                  const salePrice = item.sale_price || item.price
+                  return sum + (salePrice * item.quantity)
+                }, 0))}
+              </span>
               <span className="ml-2">VND</span>
             </div>
           </Form.Item>
@@ -650,18 +680,27 @@ const CartPage: React.FC = () => {
             <div className="mt-4 p-3 bg-blue-50 rounded-md">
               <div className="font-medium mb-2">Sản phẩm đã chọn:</div>
               <div className="space-y-2">
-                {selectedProducts.map((product) => (
-                  <div key={product.productId} className="flex justify-between items-center">
-                    <div>
-                      {product.product_name} x {product.quantity}
+                {selectedProducts.map((product) => {
+                  const salePrice = product.sale_price || product.price
+                  const itemTotal = salePrice * product.quantity
+                  return (
+                    <div key={product.productId} className="flex justify-between items-center">
+                      <div>
+                        {product.product_name} x {product.quantity}
+                      </div>
+                      <div className="text-blue-600 font-medium">
+                        {formatCurrency(itemTotal)}
+                      </div>
                     </div>
-                    <div className="text-blue-600 font-medium">{formatCurrency(product.price * product.quantity)}</div>
-                  </div>
-                ))}
+                  )
+                })}
                 <div className="border-t pt-2 flex justify-between font-medium">
                   <div>Tổng cộng:</div>
                   <div className="text-blue-600">
-                    {formatCurrency(selectedProducts.reduce((sum, item) => sum + item.price * item.quantity, 0))}
+                    {formatCurrency(selectedProducts.reduce((sum, item) => {
+                      const salePrice = item.sale_price || item.price
+                      return sum + (salePrice * item.quantity)
+                    }, 0))}
                   </div>
                 </div>
               </div>

@@ -15,9 +15,14 @@ interface User {
   userName: string
   fullName: string
   email: string
+  password?: string
   roles: string
   status: string
-  avatarUrl: string
+  avatarUrl?: string
+  lastLogin?: Date
+  gender?: 'male' | 'female'
+  phone?: string
+  birthDay?: Date
   createdAt: string
   updatedAt: string
 }
@@ -81,7 +86,14 @@ const UserPage: React.FC = () => {
       message.error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại')
       navigate('/login')
     } else if (error.response?.data?.message) {
-      message.error(error.response.data.message)
+      const errorMessage = error.response.data.message
+      if (typeof errorMessage === 'string') {
+        message.error(errorMessage)
+      } else if (Array.isArray(errorMessage)) {
+        errorMessage.forEach((err: string) => {
+          message.error(err)
+        })
+      }
     } else {
       message.error(defaultMessage)
     }
@@ -172,7 +184,7 @@ const UserPage: React.FC = () => {
 
       if (selectedUser) {
         const updateData = { ...values }
-        // if (!values.password) delete updateData.password
+        if (!values.password) delete updateData.password
         if (!values.avatarUrl) delete updateData.avatarUrl
 
         await axios.put(`${env.API_URL}/api/v1/users/${selectedUser._id}`, updateData, {
@@ -191,7 +203,27 @@ const UserPage: React.FC = () => {
       setIsModalOpen(false)
       fetchUsers()
     } catch (error: any) {
-      handleError(error, 'Lỗi khi xử lý người dùng')
+      if (error.response?.data?.errors) {
+        const backendErrors = error.response.data.errors
+        const formErrors: { [key: string]: { errors: string[] } } = {}
+        
+        Object.keys(backendErrors).forEach(field => {
+          formErrors[field] = {
+            errors: Array.isArray(backendErrors[field]) 
+              ? backendErrors[field] 
+              : [backendErrors[field]]
+          }
+        })
+        
+        form.setFields(
+          Object.keys(formErrors).map(field => ({
+            name: field,
+            errors: formErrors[field].errors
+          }))
+        )
+      } else {
+        handleError(error, 'Lỗi khi xử lý người dùng')
+      }
     } finally {
       setSaving(false)
     }
@@ -359,68 +391,95 @@ const UserPage: React.FC = () => {
           layout="vertical"
           initialValues={{ roles: 'customer', status: 'active' }}
           className="mt-4"
+          validateTrigger={['onChange', 'onBlur']}
         >
           <Form.Item
             name="userName"
-            label="Username"
-            rules={[{ required: true, message: 'Please input username!' }]}
+            label="Tên đăng nhập"
+            rules={[
+              { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
+              { max: 50, message: 'Tên đăng nhập không được vượt quá 50 ký tự!' }
+            ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập tên đăng nhập" />
           </Form.Item>
           <Form.Item
             name="fullName"
-            label="Full Name"
-            rules={[{ required: true, message: 'Please input full name!' }]}
+            label="Họ và tên"
+            rules={[
+              { required: true, message: 'Vui lòng nhập họ và tên!' },
+              { max: 100, message: 'Họ và tên không được vượt quá 100 ký tự!' }
+            ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập họ và tên" />
           </Form.Item>
           <Form.Item
             name="email"
             label="Email"
             rules={[
-              { required: true, message: 'Please input email!' },
-              { type: 'email', message: 'Please input a valid email!' },
+              { required: true, message: 'Vui lòng nhập email!' },
+              { max: 100, message: 'Email không được vượt quá 100 ký tự!' },
+              { 
+                pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                message: 'Email không hợp lệ!'
+              }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập email" />
           </Form.Item>
           <Form.Item
             name="roles"
-            label="Role"
-            rules={[{ required: true, message: 'Please select role!' }]}
+            label="Vai trò"
+            rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
+            validateFirst
           >
-            <Select className="rounded-md">
-              <Option value="admin">Admin</Option>
-              <Option value="customer">Customer</Option>
+            <Select className="rounded-md" placeholder="Chọn vai trò">
+              <Option value="admin">Quản trị viên</Option>
+              <Option value="customer">Khách hàng</Option>
             </Select>
           </Form.Item>
           <Form.Item
             name="status"
-            label="Status"
-            rules={[{ required: true, message: 'Please select status!' }]}
+            label="Trạng thái"
+            rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+            validateFirst
           >
-            <Select className="rounded-md">
-              <Option value="active">Active</Option>
-              <Option value="inactive">Inactive</Option>
-              <Option value="banned">Banned</Option>
+            <Select className="rounded-md" placeholder="Chọn trạng thái">
+              <Option value="active">Hoạt động</Option>
+              <Option value="inactive">Không hoạt động</Option>
+              <Option value="banned">Bị cấm</Option>
             </Select>
           </Form.Item>
           <Form.Item
             name="password"
-            label="Password"
+            label="Mật khẩu"
             rules={
               selectedUser
-                ? [{ min: 6, message: 'Password must be at least 6 characters!' }]
+                ? [
+                    { max: 255, message: 'Mật khẩu không được vượt quá 255 ký tự!' }
+                  ]
                 : [
-                    { required: true, message: 'Please input password!' },
-                    { min: 6, message: 'Password must be at least 6 characters!' },
+                    { required: true, message: 'Vui lòng nhập mật khẩu!' },
+                    { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự!' },
+                    { max: 255, message: 'Mật khẩu không được vượt quá 255 ký tự!' }
                   ]
             }
+            validateFirst
           >
-            <Input.Password className="rounded-md" />
+            <Input.Password className="rounded-md" placeholder="Nhập mật khẩu" />
           </Form.Item>
-          <Form.Item name="avatarUrl" label="Avatar URL">
-            <Input className="rounded-md" />
+          <Form.Item 
+            name="avatarUrl" 
+            label="URL ảnh đại diện"
+            rules={[
+              { max: 255, message: 'URL không được vượt quá 255 ký tự!' }
+            ]}
+            validateFirst
+          >
+            <Input className="rounded-md" placeholder="Nhập URL ảnh đại diện" />
           </Form.Item>
         </Form>
       </Modal>

@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Table, Button, Space, Modal, Form, Input, message, Typography, Input as AntInput } from "antd"
-import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from "@ant-design/icons"
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, InfoCircleOutlined } from "@ant-design/icons"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
@@ -81,7 +81,14 @@ const BrandPage: React.FC = () => {
       message.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại")
       navigate("/login")
     } else if (error.response?.data?.message) {
-      message.error(error.response.data.message)
+      const errorMessage = error.response.data.message
+      if (typeof errorMessage === 'string') {
+        message.error(errorMessage)
+      } else if (Array.isArray(errorMessage)) {
+        errorMessage.forEach((err: string) => {
+          message.error(err)
+        })
+      }
     } else {
       message.error(defaultMessage)
     }
@@ -161,7 +168,30 @@ const BrandPage: React.FC = () => {
       fetchBrands()
       setIsModalOpen(false)
     } catch (error: any) {
-      handleError(error, "Lỗi khi xử lý thương hiệu")
+      if (error.response?.data?.errors) {
+        // Xử lý lỗi validate từ backend và hiển thị dưới từng trường
+        const backendErrors = error.response.data.errors
+        const formErrors: { [key: string]: { errors: string[] } } = {}
+        
+        // Chuyển đổi lỗi backend thành định dạng lỗi form
+        Object.keys(backendErrors).forEach(field => {
+          formErrors[field] = {
+            errors: Array.isArray(backendErrors[field]) 
+              ? backendErrors[field] 
+              : [backendErrors[field]]
+          }
+        })
+        
+        // Set lỗi cho form
+        form.setFields(
+          Object.keys(formErrors).map(field => ({
+            name: field,
+            errors: formErrors[field].errors
+          }))
+        )
+      } else {
+        handleError(error, "Lỗi khi xử lý thương hiệu")
+      }
     } finally {
       setSaving(false)
     }
@@ -310,46 +340,81 @@ const BrandPage: React.FC = () => {
         title={selectedBrand ? "Chỉnh sửa thương hiệu" : "Thêm mới thương hiệu"}
         open={isModalOpen}
         onOk={handleModalOk}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={() => {
+          setIsModalOpen(false)
+          form.resetFields()
+        }}
         okButtonProps={{ loading: saving, className: "rounded-md bg-blue-500 hover:bg-blue-600" }}
         cancelButtonProps={{ disabled: saving, className: "rounded-md" }}
         width={600}
         className="p-4"
       >
-        <Form form={form} layout="vertical" className="mt-4">
+        <Form 
+          form={form} 
+          layout="vertical" 
+          className="mt-4"
+          validateTrigger={['onChange', 'onBlur']}
+        >
           <Form.Item
             name="brand_name"
             label="Tên Thương Hiệu"
             rules={[
-              { required: true, message: "Vui lòng nhập tên thương hiệu" },
-              { min: 2, message: "Tên thương hiệu phải có ít nhất 2 ký tự" },
-              { max: 50, message: "Tên thương hiệu không được vượt quá 50 ký tự" },
+              { required: true, message: "Vui lòng nhập tên thương hiệu!" },
+              { min: 2, message: "Tên thương hiệu phải có ít nhất 2 ký tự!" },
+              { max: 50, message: "Tên thương hiệu không được vượt quá 50 ký tự!" }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập tên thương hiệu" />
           </Form.Item>
 
           <Form.Item
             name="description"
             label="Mô Tả"
             rules={[
-              { required: true, message: "Vui lòng nhập mô tả" },
-              { max: 500, message: "Mô tả không được vượt quá 500 ký tự" },
+              { required: true, message: "Vui lòng nhập mô tả!" },
+              { max: 500, message: "Mô tả không được vượt quá 500 ký tự!" }
             ]}
+            validateFirst
           >
-            <Input.TextArea rows={4} className="rounded-md" />
+            <Input.TextArea 
+              rows={4} 
+              className="rounded-md" 
+              placeholder="Nhập mô tả thương hiệu"
+            />
           </Form.Item>
 
           <Form.Item
             name="slug"
             label="Slug"
             rules={[
-              { required: true, message: "Vui lòng nhập slug" },
-              { min: 2, message: "Slug phải có ít nhất 2 ký tự" },
-              { max: 50, message: "Slug không được vượt quá 50 ký tự" },
+              { required: true, message: "Vui lòng nhập slug!" },
+              { min: 2, message: "Slug phải có ít nhất 2 ký tự!" },
+              { max: 50, message: "Slug không được vượt quá 50 ký tự!" },
+              { 
+                pattern: /^[a-z0-9-]+$/,
+                message: "Slug chỉ được chứa chữ thường, số và dấu gạch ngang!"
+              }
             ]}
+            validateFirst
+            tooltip={{
+              title: "Slug sẽ được tự động chuyển thành chữ thường và thay thế khoảng trắng bằng dấu gạch ngang",
+              icon: <InfoCircleOutlined />,
+            }}
           >
-            <Input className="rounded-md" />
+            <Input 
+              className="rounded-md" 
+              placeholder="Nhập slug (ví dụ: samsung, apple-iphone)"
+              onChange={(e) => {
+                // Tự động chuyển đổi thành slug format
+                const value = e.target.value
+                  .toLowerCase()
+                  .replace(/[^a-z0-9-]/g, '-')
+                  .replace(/-+/g, '-')
+                  .replace(/^-|-$/g, '')
+                form.setFieldValue('slug', value)
+              }}
+            />
           </Form.Item>
         </Form>
       </Modal>

@@ -550,8 +550,9 @@ const PaymentsPage: React.FC = () => {
               label="Số Tiền"
               rules={[
                 { required: true, message: "Vui lòng nhập số tiền" },
-                { type: "number", min: 0, message: "Số tiền phải lớn hơn 0" },
+                { type: "number", min: 0, message: "Số tiền phải lớn hơn hoặc bằng 0" }
               ]}
+              validateFirst
             >
               <InputNumber
                 className="w-full rounded-md"
@@ -564,9 +565,12 @@ const PaymentsPage: React.FC = () => {
             <Form.Item
               name="transactionId"
               label="Mã Giao Dịch"
-              rules={[{ required: true, message: "Vui lòng nhập mã giao dịch" }]}
+              rules={[
+                { max: 100, message: "Mã giao dịch không được vượt quá 100 ký tự" }
+              ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập mã giao dịch" />
             </Form.Item>
           </div>
 
@@ -574,21 +578,37 @@ const PaymentsPage: React.FC = () => {
             <Form.Item
               name="method"
               label="Phương Thức Thanh Toán"
-              rules={[{ required: true, message: "Vui lòng chọn phương thức thanh toán" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn phương thức thanh toán" },
+                { 
+                  type: "enum",
+                  enum: ["credit_card", "paypal", "cod"],
+                  message: "Phương thức thanh toán không hợp lệ"
+                }
+              ]}
+              validateFirst
             >
-              <Select className="rounded-md">
+              <Select className="rounded-md" placeholder="Chọn phương thức thanh toán">
                 <Option value="credit_card">Thẻ Tín Dụng</Option>
                 <Option value="paypal">PayPal</Option>
-                <Option value="cod">COD</Option>
+                <Option value="cod">Thanh Toán Khi Nhận Hàng</Option>
               </Select>
             </Form.Item>
 
             <Form.Item
               name="status"
               label="Trạng Thái"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn trạng thái" },
+                { 
+                  type: "enum",
+                  enum: ["pending", "completed", "failed", "refunded"],
+                  message: "Trạng thái không hợp lệ"
+                }
+              ]}
+              validateFirst
             >
-              <Select className="rounded-md">
+              <Select className="rounded-md" placeholder="Chọn trạng thái">
                 <Option value="pending">Chờ Xử Lý</Option>
                 <Option value="completed">Hoàn Thành</Option>
                 <Option value="failed">Thất Bại</Option>
@@ -596,15 +616,29 @@ const PaymentsPage: React.FC = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item name="gateway" label="Gateway">
-              <Input className="rounded-md" />
+            <Form.Item
+              name="gateway"
+              label="Cổng Thanh Toán"
+              rules={[
+                { max: 50, message: "Tên cổng thanh toán không được vượt quá 50 ký tự" }
+              ]}
+              validateFirst
+            >
+              <Input className="rounded-md" placeholder="Nhập tên cổng thanh toán" />
             </Form.Item>
           </div>
 
           <Divider orientation="left">Thông Tin Liên Quan</Divider>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Form.Item name="user" label="Người Dùng" rules={[{ required: true, message: "Vui lòng chọn người dùng" }]}>
+            <Form.Item
+              name="user"
+              label="Người Dùng"
+              rules={[
+                { required: true, message: "Vui lòng chọn người dùng" }
+              ]}
+              validateFirst
+            >
               <Select
                 showSearch
                 optionFilterProp="children"
@@ -624,7 +658,14 @@ const PaymentsPage: React.FC = () => {
               </Select>
             </Form.Item>
 
-            <Form.Item name="order" label="Đơn Hàng" rules={[{ required: true, message: "Vui lòng chọn đơn hàng" }]}>
+            <Form.Item
+              name="order"
+              label="Đơn Hàng"
+              rules={[
+                { required: true, message: "Vui lòng chọn đơn hàng" }
+              ]}
+              validateFirst
+            >
               <Select
                 showSearch
                 optionFilterProp="children"
@@ -647,32 +688,61 @@ const PaymentsPage: React.FC = () => {
 
           <Divider orientation="left">Thông Tin Bổ Sung</Divider>
 
-          <Form.Item name="metadata" label="Điều Kiện Khác" rules={[{ required: false }]}>
+          <Form.Item
+            name="metadata"
+            label="Thông Tin Bổ Sung"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  try {
+                    const metadata = typeof value === 'string' ? JSON.parse(value) : value;
+                    if (typeof metadata !== 'object') {
+                      return Promise.reject(new Error('Metadata phải là một object!'));
+                    }
+                    return Promise.resolve();
+                  } catch (e) {
+                    return Promise.reject(new Error('Metadata không hợp lệ!'));
+                  }
+                }
+              }
+            ]}
+            validateFirst
+          >
             {metadataMode === "select" ? (
               <Select
                 onChange={(val) => {
                   if (val === "__custom__") setMetadataMode("custom")
                   else form.setFieldsValue({ metadata: val })
                 }}
-                placeholder="Chọn điều kiện hoặc tùy chỉnh"
+                placeholder="Chọn thông tin bổ sung hoặc tùy chỉnh"
                 className="rounded-md"
               >
                 <Option value={JSON.stringify({})}>Không có</Option>
-                <Option value={JSON.stringify({ fast: true })}>Thanh toán nhanh</Option>
-                <Option value={JSON.stringify({ refunded: true })}>Đã hoàn trả</Option>
-                <Option value={JSON.stringify({ note: "Khách VIP" })}>Ghi chú đặc biệt</Option>
+                <Option value={JSON.stringify({ gateway: "VNPay" })}>VNPay</Option>
+                <Option value={JSON.stringify({ gateway: "Momo" })}>Momo</Option>
+                <Option value={JSON.stringify({ gateway: "ZaloPay" })}>ZaloPay</Option>
                 <Option value="__custom__">Tùy chỉnh...</Option>
               </Select>
             ) : (
               <div>
-               
+                <Input.TextArea
+                  value={customMetadata}
+                  onChange={(e) => {
+                    setCustomMetadata(e.target.value)
+                    form.setFieldsValue({ metadata: e.target.value })
+                  }}
+                  placeholder="Nhập metadata dạng JSON"
+                  rows={4}
+                  className="rounded-md"
+                />
                 <Button
                   size="small"
                   onClick={() => {
                     setMetadataMode("select")
                     form.setFieldsValue({ metadata: JSON.stringify({}) })
                   }}
-                  className="rounded-md"
+                  className="mt-2 rounded-md"
                 >
                   Quay lại lựa chọn có sẵn
                 </Button>

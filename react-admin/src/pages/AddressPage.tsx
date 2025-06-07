@@ -13,7 +13,7 @@ const { Title } = Typography
 
 interface Address {
   _id: string
-  type: string
+  type: "shipping" | "billing"
   fullName: string
   phoneNumber: string
   street: string
@@ -460,8 +460,20 @@ const AddressPage: React.FC = () => {
           initialValues={{ type: "shipping", country: "VN", isDefault: false }}
           className="mt-4"
         >
-          <Form.Item name="user" label="User" rules={[{ required: true, message: "Please select a user!" }]}>
-            <Select showSearch optionFilterProp="children" placeholder="Select user" className="rounded-md">
+          <Form.Item 
+            name="user" 
+            label="Người Dùng" 
+            rules={[
+              { required: true, message: "Vui lòng chọn người dùng" }
+            ]}
+            validateFirst
+          >
+            <Select 
+              showSearch 
+              optionFilterProp="children" 
+              placeholder="Chọn người dùng" 
+              className="rounded-md"
+            >
               {users.map((u) => (
                 <Option key={u._id} value={u._id}>
                   {u.fullName} ({u.userName})
@@ -469,61 +481,125 @@ const AddressPage: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="type" label="Type" rules={[{ required: true, message: "Please select address type!" }]}>
-            <Select className="rounded-md">
-              <Option value="shipping">Shipping</Option>
-              <Option value="billing">Billing</Option>
+
+          <Form.Item 
+            name="type" 
+            label="Loại Địa Chỉ" 
+            rules={[
+              { required: true, message: "Vui lòng chọn loại địa chỉ" },
+              { 
+                type: "enum",
+                enum: ["shipping", "billing"],
+                message: "Loại địa chỉ không hợp lệ"
+              }
+            ]}
+            validateFirst
+          >
+            <Select className="rounded-md" placeholder="Chọn loại địa chỉ">
+              <Option value="shipping">Địa Chỉ Giao Hàng</Option>
+              <Option value="billing">Địa Chỉ Thanh Toán</Option>
             </Select>
           </Form.Item>
+
           <Form.Item
             name="fullName"
-            label="Full Name"
+            label="Họ Tên"
             rules={[
-              { required: true, message: "Please input full name!" },
-              { max: 100, message: "Full name max 100 characters!" },
+              { required: true, message: "Vui lòng nhập họ tên" },
+              { max: 100, message: "Họ tên không được vượt quá 100 ký tự" }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập họ tên" />
           </Form.Item>
+
           <Form.Item
             name="phoneNumber"
-            label="Phone Number"
+            label="Số Điện Thoại"
             rules={[
-              { required: true, message: "Please input phone number!" },
-              { max: 20, message: "Phone number max 20 characters!" },
-              { pattern: /^\d+$/, message: "Phone number must contain only digits!" },
+              { required: true, message: "Vui lòng nhập số điện thoại" },
+              { max: 20, message: "Số điện thoại không được vượt quá 20 ký tự" },
+              { pattern: /^\d+$/, message: "Số điện thoại chỉ được chứa số" }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập số điện thoại" />
           </Form.Item>
-          <Form.Item name="street" label="Street" rules={[{ required: true, message: "Please input street!" }]}>
-            <Input.TextArea rows={2} className="rounded-md" />
-          </Form.Item>
-          <Form.Item name="ward" label="Ward" rules={[{ required: true, message: "Please input ward!" }]}>
-            <Input className="rounded-md" />
-          </Form.Item>
-          <Form.Item name="district" label="District" rules={[{ required: true, message: "Please input district!" }]}>
-            <Input className="rounded-md" />
-          </Form.Item>
-          <Form.Item name="city" label="City" rules={[{ required: true, message: "Please input city!" }]}>
-            <Input className="rounded-md" />
-          </Form.Item>
-          <Form.Item
-            name="country"
-            label="Country"
+
+          <Form.Item 
+            name="street" 
+            label="Đường/Phố" 
             rules={[
-              { required: true, message: "Please select country!" },
-              { max: 2, message: "Country code max 2 characters!" },
+              { required: true, message: "Vui lòng nhập đường/phố" },
+              { max: 255, message: "Đường/phố không được vượt quá 255 ký tự" }
             ]}
+            validateFirst
           >
-            <Select className="rounded-md">
-              <Option value="VN">Vietnam</Option>
-              <Option value="US">United States</Option>
-              <Option value="JP">Japan</Option>
+            <Input.TextArea rows={2} className="rounded-md" placeholder="Nhập đường/phố" />
+          </Form.Item>
+
+          <Form.Item 
+            name="ward" 
+            label="Phường/Xã" 
+            rules={[
+              { required: true, message: "Vui lòng nhập phường/xã" },
+              { max: 255, message: "Phường/xã không được vượt quá 255 ký tự" }
+            ]}
+            validateFirst
+          >
+            <Input className="rounded-md" placeholder="Nhập phường/xã" />
+          </Form.Item>
+
+          <Form.Item 
+            name="district" 
+            label="Quận/Huyện" 
+            rules={[
+              { required: true, message: "Vui lòng nhập quận/huyện" },
+              { max: 255, message: "Quận/huyện không được vượt quá 255 ký tự" }
+            ]}
+            validateFirst
+          >
+            <Input className="rounded-md" placeholder="Nhập quận/huyện" />
+          </Form.Item>
+
+          <Form.Item 
+            name="city" 
+            label="Tỉnh/Thành" 
+            rules={[
+              { required: true, message: "Vui lòng nhập tỉnh/thành" },
+              { max: 100, message: "Tỉnh/thành không được vượt quá 100 ký tự" }
+            ]}
+            validateFirst
+          >
+            <Input className="rounded-md" placeholder="Nhập tỉnh/thành" />
+          </Form.Item>
+
+          <Form.Item 
+            name="country" 
+            label="Quốc Gia" 
+            rules={[
+              { required: true, message: "Vui lòng chọn quốc gia" },
+              { max: 100, message: "Tên quốc gia không được vượt quá 100 ký tự" }
+            ]}
+            validateFirst
+          >
+            <Select className="rounded-md" placeholder="Chọn quốc gia">
+              <Option value="VN">Việt Nam</Option>
+              <Option value="US">Hoa Kỳ</Option>
+              <Option value="JP">Nhật Bản</Option>
             </Select>
           </Form.Item>
-          <Form.Item name="isDefault" label="Is Default" valuePropName="checked">
-            <Checkbox>Set as default address</Checkbox>
+
+          <Form.Item 
+            name="isDefault" 
+            label="Địa Chỉ Mặc Định" 
+            valuePropName="checked"
+            rules={[
+              { required: true, message: "Vui lòng chọn trạng thái địa chỉ mặc định" }
+            ]}
+            validateFirst
+          >
+            <Checkbox>Đặt làm địa chỉ mặc định</Checkbox>
           </Form.Item>
         </Form>
       </Modal>

@@ -400,11 +400,11 @@ const LocationPage: React.FC = () => {
             label="Tên Địa Điểm"
             rules={[
               { required: true, message: "Vui lòng nhập tên địa điểm" },
-              { min: 1, message: "Tên địa điểm phải có ít nhất 1 ký tự" },
-              { max: 100, message: "Tên địa điểm không được vượt quá 100 ký tự" },
+              { max: 100, message: "Tên địa điểm không được vượt quá 100 ký tự" }
             ]}
+            validateFirst
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập tên địa điểm" />
           </Form.Item>
 
           <Form.Item
@@ -412,14 +412,22 @@ const LocationPage: React.FC = () => {
             label="Địa Chỉ 1"
             rules={[
               { required: true, message: "Vui lòng nhập địa chỉ 1" },
-              { max: 255, message: "Địa chỉ không được vượt quá 255 ký tự" },
+              { max: 255, message: "Địa chỉ không được vượt quá 255 ký tự" }
             ]}
+            validateFirst
           >
-            <TextArea rows={2} className="rounded-md" />
+            <TextArea rows={2} className="rounded-md" placeholder="Nhập địa chỉ dòng 1" />
           </Form.Item>
 
-          <Form.Item name="addressLine2" label="Địa Chỉ 2">
-            <TextArea rows={2} className="rounded-md" />
+          <Form.Item 
+            name="addressLine2" 
+            label="Địa Chỉ 2"
+            rules={[
+              { max: 255, message: "Địa chỉ không được vượt quá 255 ký tự" }
+            ]}
+            validateFirst
+          >
+            <TextArea rows={2} className="rounded-md" placeholder="Nhập địa chỉ dòng 2 (nếu có)" />
           </Form.Item>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -428,14 +436,22 @@ const LocationPage: React.FC = () => {
               label="Thành Phố"
               rules={[
                 { required: true, message: "Vui lòng nhập thành phố" },
-                { max: 100, message: "Tên thành phố không được vượt quá 100 ký tự" },
+                { max: 100, message: "Tên thành phố không được vượt quá 100 ký tự" }
               ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập tên thành phố" />
             </Form.Item>
 
-            <Form.Item name="state" label="Tỉnh/Thành">
-              <Input className="rounded-md" />
+            <Form.Item 
+              name="state" 
+              label="Tỉnh/Thành"
+              rules={[
+                { max: 100, message: "Tên tỉnh/thành không được vượt quá 100 ký tự" }
+              ]}
+              validateFirst
+            >
+              <Input className="rounded-md" placeholder="Nhập tên tỉnh/thành" />
             </Form.Item>
           </div>
 
@@ -445,10 +461,11 @@ const LocationPage: React.FC = () => {
               label="Mã Bưu Chính"
               rules={[
                 { required: true, message: "Vui lòng nhập mã bưu chính" },
-                { max: 20, message: "Mã bưu chính không được vượt quá 20 ký tự" },
+                { max: 20, message: "Mã bưu chính không được vượt quá 20 ký tự" }
               ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập mã bưu chính" />
             </Form.Item>
 
             <Form.Item
@@ -456,14 +473,20 @@ const LocationPage: React.FC = () => {
               label="Quốc Gia"
               rules={[
                 { required: true, message: "Vui lòng nhập quốc gia" },
-                { max: 100, message: "Tên quốc gia không được vượt quá 100 ký tự" },
+                { max: 100, message: "Tên quốc gia không được vượt quá 100 ký tự" }
               ]}
+              validateFirst
             >
-              <Input className="rounded-md" />
+              <Input className="rounded-md" placeholder="Nhập tên quốc gia" />
             </Form.Item>
           </div>
 
-          <Form.Item name="isActive" label="Trạng Thái" valuePropName="checked">
+          <Form.Item 
+            name="isActive" 
+            label="Trạng Thái" 
+            valuePropName="checked"
+            initialValue={true}
+          >
             <Switch checkedChildren="Hoạt động" unCheckedChildren="Không hoạt động" className="bg-gray-300" />
           </Form.Item>
         </Form>

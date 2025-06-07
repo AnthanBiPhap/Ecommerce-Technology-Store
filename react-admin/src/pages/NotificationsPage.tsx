@@ -389,21 +389,87 @@ const NotificationsPage: React.FC = () => {
         className="p-4"
       >
         <Form form={form} layout="vertical" className="mt-4">
-          <Form.Item name="type" label="Loại" rules={[{ required: true, message: "Chọn loại thông báo" }]}>
-            <Select className="rounded-md">
+          <Form.Item 
+            name="type" 
+            label="Loại" 
+            rules={[
+              { required: true, message: "Vui lòng chọn loại thông báo" },
+              { 
+                type: "enum",
+                enum: ["order", "payment", "account", "promotion"],
+                message: "Loại thông báo không hợp lệ"
+              }
+            ]}
+            validateFirst
+          >
+            <Select className="rounded-md" placeholder="Chọn loại thông báo">
               <Option value="order">Đơn Hàng</Option>
               <Option value="payment">Thanh Toán</Option>
               <Option value="account">Tài Khoản</Option>
               <Option value="promotion">Khuyến Mãi</Option>
             </Select>
           </Form.Item>
-          <Form.Item name="title" label="Tiêu Đề" rules={[{ required: true, message: "Nhập tiêu đề" }]}>
-            <Input className="rounded-md" />
+
+          <Form.Item 
+            name="title" 
+            label="Tiêu Đề" 
+            rules={[
+              { required: true, message: "Vui lòng nhập tiêu đề" },
+              { max: 100, message: "Tiêu đề không được vượt quá 100 ký tự" }
+            ]}
+            validateFirst
+          >
+            <Input className="rounded-md" placeholder="Nhập tiêu đề thông báo" />
           </Form.Item>
-          <Form.Item name="message" label="Nội Dung" rules={[{ required: true, message: "Nhập nội dung" }]}>
-            <TextArea rows={3} className="rounded-md" />
+
+          <Form.Item 
+            name="message" 
+            label="Nội Dung" 
+            rules={[
+              { required: true, message: "Vui lòng nhập nội dung" },
+              { max: 500, message: "Nội dung không được vượt quá 500 ký tự" }
+            ]}
+            validateFirst
+          >
+            <TextArea rows={3} className="rounded-md" placeholder="Nhập nội dung thông báo" />
           </Form.Item>
-          <Form.Item name="user" label="Người Nhận" rules={[{ required: true, message: "Chọn người nhận" }]}>
+
+          <Form.Item 
+            name="metadata" 
+            label="Metadata"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  try {
+                    const metadata = typeof value === 'string' ? JSON.parse(value) : value;
+                    if (typeof metadata !== 'object') {
+                      return Promise.reject(new Error('Metadata phải là một object!'));
+                    }
+                    return Promise.resolve();
+                  } catch (e) {
+                    return Promise.reject(new Error('Metadata không hợp lệ!'));
+                  }
+                }
+              }
+            ]}
+            validateFirst
+          >
+            <TextArea 
+              rows={3} 
+              className="rounded-md" 
+              placeholder="Nhập metadata dạng JSON (nếu có)"
+            />
+          </Form.Item>
+
+          <Form.Item 
+            name="user" 
+            label="Người Nhận" 
+            rules={[
+              { required: true, message: "Vui lòng chọn người nhận" }
+            ]}
+            validateFirst
+          >
             <Select
               showSearch
               optionFilterProp="children"
@@ -420,7 +486,13 @@ const NotificationsPage: React.FC = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="isRead" label="Trạng Thái" valuePropName="checked">
+
+          <Form.Item 
+            name="isRead" 
+            label="Trạng Thái" 
+            valuePropName="checked"
+            initialValue={false}
+          >
             <Switch checkedChildren="Đã đọc" unCheckedChildren="Chưa đọc" className="bg-gray-300" />
           </Form.Item>
         </Form>

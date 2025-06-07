@@ -415,21 +415,41 @@ const CouponPage: React.FC = () => {
             label="Mã Coupon"
             rules={[
               { required: true, message: "Vui lòng nhập mã coupon" },
-              { min: 2, message: "Mã coupon phải có ít nhất 2 ký tự" },
-              { max: 50, message: "Mã coupon không được vượt quá 50 ký tự" },
+              { max: 50, message: "Mã coupon không được vượt quá 50 ký tự" }
             ]}
+            validateFirst
           >
             <Input className="rounded-md uppercase" placeholder="VD: SUMMER2023" />
           </Form.Item>
 
-          <Form.Item name="type" label="Loại Coupon" rules={[{ required: true, message: "Vui lòng chọn loại coupon" }]}>
-            <Select className="rounded-md">
+          <Form.Item 
+            name="type" 
+            label="Loại Coupon" 
+            rules={[
+              { required: true, message: "Vui lòng chọn loại coupon" },
+              { 
+                type: "enum",
+                enum: ["percentage", "fixed"],
+                message: "Loại coupon không hợp lệ"
+              }
+            ]}
+            validateFirst
+          >
+            <Select className="rounded-md" placeholder="Chọn loại coupon">
               <Select.Option value="percentage">Phần Trăm (%)</Select.Option>
               <Select.Option value="fixed">Giá Cố Định (VND)</Select.Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="value" label="Giá Trị" rules={[{ required: true, message: "Vui lòng nhập giá trị coupon" }]}>
+          <Form.Item 
+            name="value" 
+            label="Giá Trị" 
+            rules={[
+              { required: true, message: "Vui lòng nhập giá trị coupon" },
+              { type: "number", min: 0, message: "Giá trị phải lớn hơn hoặc bằng 0" }
+            ]}
+            validateFirst
+          >
             <InputNumber<number>
               min={0}
               className="w-full rounded-md"
@@ -445,7 +465,10 @@ const CouponPage: React.FC = () => {
           <Form.Item
             name="minPurchase"
             label="Đơn Hàng Tối Thiểu"
-            rules={[{ required: true, message: "Vui lòng nhập đơn hàng tối thiểu" }]}
+            rules={[
+              { type: "number", min: 0, message: "Đơn hàng tối thiểu phải lớn hơn hoặc bằng 0" }
+            ]}
+            validateFirst
           >
             <InputNumber<number>
               min={0}
@@ -459,7 +482,21 @@ const CouponPage: React.FC = () => {
           <Form.Item
             name="dateRange"
             label="Thời Hạn Sử Dụng"
-            rules={[{ required: true, message: "Vui lòng chọn thời hạn sử dụng" }]}
+            rules={[
+              { required: true, message: "Vui lòng chọn thời hạn sử dụng" },
+              {
+                validator: (_, value) => {
+                  if (!value || !value[0] || !value[1]) {
+                    return Promise.reject(new Error("Vui lòng chọn thời hạn sử dụng"));
+                  }
+                  if (value[0].isAfter(value[1])) {
+                    return Promise.reject(new Error("Ngày bắt đầu phải trước ngày kết thúc"));
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}
+            validateFirst
           >
             <RangePicker
               showTime
@@ -469,19 +506,38 @@ const CouponPage: React.FC = () => {
             />
           </Form.Item>
 
-          <Form.Item name="usageLimit" label="Số Lượng Sử Dụng Tối Đa (0 = không giới hạn)">
+          <Form.Item 
+            name="usageLimit" 
+            label="Số Lượng Sử Dụng Tối Đa (0 = không giới hạn)"
+            rules={[
+              { type: "number", min: 0, message: "Số lượng sử dụng tối đa phải lớn hơn hoặc bằng 0" }
+            ]}
+            validateFirst
+          >
             <InputNumber min={0} className="w-full rounded-md" />
           </Form.Item>
 
           <Form.Item
             name="usageCount"
             label="Số Lượng Đã Sử Dụng"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng đã sử dụng" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập số lượng đã sử dụng" },
+              { type: "number", min: 0, message: "Số lượng đã sử dụng phải lớn hơn hoặc bằng 0" }
+            ]}
+            validateFirst
           >
             <InputNumber min={0} className="w-full rounded-md" disabled={!!selectedCoupon} />
           </Form.Item>
 
-          <Form.Item name="isActive" label="Trạng Thái" valuePropName="checked">
+          <Form.Item 
+            name="isActive" 
+            label="Trạng Thái" 
+            valuePropName="checked"
+            rules={[
+              { required: true, message: "Vui lòng chọn trạng thái coupon" }
+            ]}
+            validateFirst
+          >
             <Switch checkedChildren="Hoạt động" unCheckedChildren="Không hoạt động" className="bg-gray-300" />
           </Form.Item>
         </Form>
