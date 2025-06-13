@@ -478,7 +478,7 @@ const ShippingPage: React.FC = () => {
             onClick={() => handleEditShipping(record)}
             className="text-blue-500 hover:text-blue-700"
           >
-            Edit
+            Sửa
           </Button>
           <Button
             type="text"
@@ -486,7 +486,7 @@ const ShippingPage: React.FC = () => {
             onClick={() => handleDeleteShipping(record._id)}
             className="text-red-500 hover:text-red-700"
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -518,7 +518,7 @@ const ShippingPage: React.FC = () => {
             onClick={handleAddShipping}
             className="rounded-md bg-blue-500 hover:bg-blue-600"
           >
-            Add Shipping
+            Thêm vận chuyển
           </Button>
         </Space>
       </div>
@@ -547,7 +547,7 @@ const ShippingPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedShipping ? "Edit Shipping" : "Add Shipping"}
+        title={selectedShipping ? "Sửa vận chuyển" : "Thêm vận chuyển"}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => setIsModalOpen(false)}
@@ -664,24 +664,27 @@ const ShippingPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="shippingFee"
-            label="Phí Vận Chuyển"
-            rules={[
-              { required: true, message: "Vui lòng nhập phí vận chuyển" },
-              { type: 'number', min: 0, message: "Phí vận chuyển phải lớn hơn hoặc bằng 0" }
-            ]}
-            validateFirst
-            initialValue={0}
-          >
-            <InputNumber 
-              min={0} 
-              style={{ width: "100%" }} 
-              className="rounded-md" 
-              placeholder="Nhập phí vận chuyển"
-              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={value => value!.replace(/\$\s?|(,*)/g, '')}
-            />
-          </Form.Item>
+  name="shippingFee"
+  label="Phí Vận Chuyển"
+  rules={[
+    { required: true, message: "Vui lòng nhập phí vận chuyển" },
+    { type: 'number', min: 0, message: "Phí vận chuyển phải lớn hơn hoặc bằng 0" }
+  ]}
+  validateFirst
+  initialValue={0}
+>
+  <InputNumber<number>
+    min={0} 
+    style={{ width: "100%" }} 
+    className="rounded-md" 
+    placeholder="Nhập phí vận chuyển"
+    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+    parser={(value) => {
+      const parsed = value ? parseInt(value.replace(/\$\s?|(,*)/g, ''), 10) : 0;
+      return isNaN(parsed) ? 0 : parsed;
+    }}
+  />
+</Form.Item>
 
           <Form.Item 
             name="order" 

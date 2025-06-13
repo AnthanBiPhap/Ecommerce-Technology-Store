@@ -230,7 +230,7 @@ const SettingsPage: React.FC = () => {
       case "number":
         return typeof value === "number" ? value : Number(value)
       case "boolean":
-        return value ? "Yes" : "No"
+        return value ? "Có" : "Không"
       case "object":
         return typeof value === "object" ? JSON.stringify(value) : value
       case "array":
@@ -253,14 +253,14 @@ const SettingsPage: React.FC = () => {
 
   const columns: Array<ColumnType<Setting>> = [
     {
-      title: "Key",
+      title: "Khóa",
       dataIndex: "key",
       key: "key",
       width: 150,
       sorter: (a: Setting, b: Setting) => a.key.localeCompare(b.key),
     },
     {
-      title: "Value",
+      title: "Giá trị",
       dataIndex: "value",
       key: "value",
       width: 250,
@@ -268,7 +268,7 @@ const SettingsPage: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: "Type",
+      title: "Kiểu dữ liệu",
       dataIndex: "type",
       key: "type",
       width: 120,
@@ -279,44 +279,44 @@ const SettingsPage: React.FC = () => {
       ),
     },
     {
-      title: "Group",
+      title: "Nhóm",
       dataIndex: "group",
       key: "group",
       width: 150,
       sorter: (a: Setting, b: Setting) => a.group.localeCompare(b.group),
     },
     {
-      title: "Public",
+      title: "Công khai",
       dataIndex: "isPublic",
       key: "isPublic",
       width: 100,
       render: (isPublic: boolean) => (
         <Tag color={isPublic ? "green" : "red"} className="text-center w-16">
-          {isPublic ? "Public" : "Private"}
+          {isPublic ? "Công khai" : "Riêng tư"}
         </Tag>
       ),
       filters: [
-        { text: "Public", value: true },
-        { text: "Private", value: false },
+        { text: "Công khai", value: true },
+        { text: "Riêng tư", value: false },
       ],
       onFilter: (value: boolean | Key, record: Setting) => record.isPublic === value,
     },
     {
-      title: "Description",
+      title: "Mô tả",
       dataIndex: "description",
       key: "description",
       width: 200,
       ellipsis: true,
     },
     {
-      title: "Created At",
+      title: "Ngày tạo",
       dataIndex: "createdAt",
       key: "createdAt",
       width: 180,
       render: (date: string) => formatDate(date),
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
       width: 200,
       render: (_: any, record: Setting) =>
@@ -328,7 +328,7 @@ const SettingsPage: React.FC = () => {
               onClick={() => handleEditSetting(record)}
               className="text-blue-500 hover:text-blue-700"
             >
-              Edit
+              Sửa
             </Button>
             <Button
               type="text"
@@ -336,7 +336,7 @@ const SettingsPage: React.FC = () => {
               onClick={() => handleDeleteSetting(record._id)}
               className="text-red-500 hover:text-red-700"
             >
-              Delete
+              Xóa
             </Button>
           </Space>
         ) : null,
@@ -347,7 +347,7 @@ const SettingsPage: React.FC = () => {
     <div className="p-4 max-w-7xl mx-auto">
       <div className="flex justify-between items-center flex-wrap gap-4 mb-6">
         <Title level={3} className="m-0">
-          Settings Management
+          Quản Lý Cài Đặt
         </Title>
         <Space>
           {isAdmin && (
@@ -357,11 +357,11 @@ const SettingsPage: React.FC = () => {
               onClick={handleAddSetting}
               className="rounded-md bg-blue-500 hover:bg-blue-600"
             >
-              Add Setting
+              Thêm Cài Đặt
             </Button>
           )}
           <span className={`font-medium ${user?.roles === "admin" ? "text-blue-500" : "text-red-500"}`}>
-            Current Role: {user?.roles ? user.roles.charAt(0).toUpperCase() + user.roles.slice(1) : "Unknown"}
+            Vai trò hiện tại: {user?.roles ? (user.roles === 'admin' ? 'Quản trị viên' : 'Người dùng') : 'Không xác định'}
           </span>
         </Space>
       </div>
@@ -369,7 +369,7 @@ const SettingsPage: React.FC = () => {
       <div className="mb-6">
         <Space>
           <Input
-            placeholder="Search by key"
+            placeholder="Tìm kiếm theo khóa"
             allowClear
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -383,7 +383,7 @@ const SettingsPage: React.FC = () => {
             onClick={handleSearch}
             className="rounded-md bg-blue-500 hover:bg-blue-600"
           >
-            Search
+            Tìm kiếm
           </Button>
         </Space>
       </div>
@@ -399,7 +399,7 @@ const SettingsPage: React.FC = () => {
             total: pagination.total,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
-            showTotal: (total) => <span className="ml-0">Total {total} settings</span>,
+            showTotal: (total) => <span className="ml-0">Tổng cộng {total} cài đặt</span>,
             className: "ant-table-pagination",
           }}
           onChange={handleTableChange}
@@ -412,7 +412,7 @@ const SettingsPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedSetting ? "Edit Setting" : "Add Setting"}
+        title={selectedSetting ? "Chỉnh Sửa Cài Đặt" : "Thêm Mới Cài Đặt"}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => setIsModalOpen(false)}
@@ -424,16 +424,52 @@ const SettingsPage: React.FC = () => {
         <Form form={form} layout="vertical" className="mt-4">
           <Form.Item
             name="key"
-            label="Key"
+            label="Khóa"
             rules={[
-              { required: true, message: "Please enter key!" },
-              { max: 100, message: "Maximum 100 characters!" },
+              { required: true, message: "Vui lòng nhập khóa!" },
+              { max: 100, message: "Tối đa 100 ký tự!" },
             ]}
           >
             <Input disabled={!!selectedSetting} className="rounded-md" />
           </Form.Item>
 
-          <Form.Item name="type" label="Type" rules={[{ required: true, message: "Please select type!" }]}>
+          <Form.Item name="type" label="Kiểu dữ liệu" rules={[{ required: true, message: "Vui lòng chọn kiểu dữ liệu!" }]}>
+            <Select
+              className="rounded-md"
+              onChange={(value) => {
+                // Reset value when type changes
+                form.setFieldsValue({ value: "" })
+              }}
+            >
+              <Option value="string">Chuỗi</Option>
+              <Option value="number">Số</Option>
+              <Option value="boolean">Boolean</Option>
+              <Option value="object">Đối tượng</Option>
+              <Option value="array">Mảng</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="value" label="Giá trị" rules={[{ required: true, message: "Vui lòng nhập giá trị!" }]}>
+            {form.getFieldValue("type") === "boolean" ? (
+              <Select className="rounded-md">
+                <Option value={true}>Đúng</Option>
+                <Option value={false}>Sai</Option>
+              </Select>
+            ) : form.getFieldValue("type") === "number" ? (
+              <InputNumber className="w-full rounded-md" />
+            ) : (
+              <TextArea
+                rows={4}
+                className="rounded-md"
+                placeholder={
+                  form.getFieldValue("type") === "object"
+                    ? '{"tên": "giá trị"}'
+                    : form.getFieldValue("type") === "array"
+                      ? '["phần tử 1", "phần tử 2"]'
+                      : ""
+                }
+              />
+            )}
             <Select
               className="rounded-md"
               onChange={(value) => {
@@ -449,7 +485,7 @@ const SettingsPage: React.FC = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item name="value" label="Value" rules={[{ required: true, message: "Please enter value!" }]}>
+          <Form.Item name="value" label="Giá trị" rules={[{ required: true, message: "Vui lòng nhập giá trị!" }]}>
             {form.getFieldValue("type") === "boolean" ? (
               <Select className="rounded-md">
                 <Option value={true}>True</Option>
@@ -474,21 +510,21 @@ const SettingsPage: React.FC = () => {
 
           <Form.Item
             name="group"
-            label="Group"
+            label="Nhóm"
             rules={[
-              { required: true, message: "Please enter group!" },
-              { max: 50, message: "Maximum 50 characters!" },
+              { required: true, message: "Vui lòng nhập nhóm!" },
+              { max: 50, message: "Tối đa 50 ký tự!" },
             ]}
           >
             <Input className="rounded-md" />
           </Form.Item>
 
-          <Form.Item name="isPublic" label="Is Public" valuePropName="checked">
+          <Form.Item name="isPublic" label="Công khai" valuePropName="checked">
             <Switch />
           </Form.Item>
 
-          <Form.Item name="description" label="Description" rules={[{ max: 255, message: "Maximum 255 characters!" }]}>
-            <TextArea rows={3} className="rounded-md" />
+          <Form.Item name="description" label="Mô tả" rules={[{ max: 255, message: "Tối đa 255 ký tự!" }]}>
+            <TextArea rows={3} className="rounded-md" placeholder="Nhập mô tả (tùy chọn)" />
           </Form.Item>
         </Form>
       </Modal>

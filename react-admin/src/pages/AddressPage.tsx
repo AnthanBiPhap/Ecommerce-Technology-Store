@@ -324,7 +324,7 @@ const AddressPage: React.FC = () => {
               onClick={() => handleEditAddress(record)}
               className="text-blue-500 hover:text-blue-700"
             >
-              Edit
+              Sửa
             </Button>
             <Button
               type="text"
@@ -332,7 +332,7 @@ const AddressPage: React.FC = () => {
               onClick={() => handleDeleteAddress(record._id)}
               className="text-red-500 hover:text-red-700"
             >
-              Delete
+              Xóa
             </Button>
           </Space>
         ) : null,
@@ -353,7 +353,7 @@ const AddressPage: React.FC = () => {
               onClick={handleAddAddress}
               className="rounded-md bg-blue-500 hover:bg-blue-600"
             >
-              Add Address
+              Thêm địa chỉ
             </Button>
           )}
           <span className={`font-medium ${user?.roles === "admin" ? "text-blue-500" : "text-red-500"}`}>
@@ -442,7 +442,7 @@ const AddressPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedAddress ? "Edit Address" : "Add Address"}
+        title={selectedAddress ? "Sửa địa chỉ" : "Thêm địa chỉ"}
         open={isModalOpen}
         onOk={handleCreateOrUpdateAddress}
         onCancel={() => {

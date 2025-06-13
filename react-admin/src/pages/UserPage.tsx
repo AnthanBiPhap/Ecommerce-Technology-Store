@@ -300,7 +300,7 @@ const UserPage: React.FC = () => {
               onClick={() => handleEditUser(record)}
               className="text-blue-500 hover:text-blue-700"
             >
-              Edit
+              Sửa
             </Button>
             <Button
               type="text"
@@ -308,7 +308,7 @@ const UserPage: React.FC = () => {
               onClick={() => handleDeleteUser(record._id)}
               className="text-red-500 hover:text-red-700"
             >
-              Delete
+              Xóa
             </Button>
             <Button
               type="text"
@@ -319,7 +319,7 @@ const UserPage: React.FC = () => {
               }}
               className="text-blue-500 hover:text-blue-700"
             >
-              Forgot Password
+              Quên mật khẩu
             </Button>
           </Space>
         ) : null,
@@ -340,7 +340,7 @@ const UserPage: React.FC = () => {
               onClick={handleAddUser}
               className="rounded-md bg-blue-500 hover:bg-blue-600"
             >
-              Add User
+              Thêm người dùng
             </Button>
           )}
           <span
@@ -374,7 +374,7 @@ const UserPage: React.FC = () => {
       />
 
       <Modal
-        title={selectedUser ? 'Edit User' : 'Add User'}
+        title={selectedUser ? 'Sửa người dùng' : 'Thêm người dùng'}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => {

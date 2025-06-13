@@ -406,7 +406,7 @@ const VendorPage: React.FC = () => {
             onClick={() => handleEditVendor(record)}
             className="text-blue-500 hover:text-blue-700"
           >
-            Edit
+            Sửa
           </Button>
           <Button
             type="text"
@@ -414,7 +414,7 @@ const VendorPage: React.FC = () => {
             onClick={() => handleDeleteVendor(record._id)}
             className="text-red-500 hover:text-red-700"
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -446,7 +446,7 @@ const VendorPage: React.FC = () => {
             onClick={handleAddVendor}
             className="rounded-md bg-blue-500 hover:bg-blue-600"
           >
-            Add Vendor
+            Thêm Vendor
           </Button>
         </Space>
       </div>
@@ -475,7 +475,7 @@ const VendorPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedVendor ? "Edit Vendor" : "Add Vendor"}
+        title={selectedVendor ? "Sửa Vendor" : "Thêm Vendor"}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => setIsModalOpen(false)}
@@ -491,8 +491,8 @@ const VendorPage: React.FC = () => {
                 name="companyName"
                 label="Company Name"
                 rules={[
-                  { required: true, message: "Please enter company name!" },
-                  { max: 100, message: "Maximum 100 characters!" },
+                  { required: true, message: "Vui lòng nhập tên công ty!" },
+                  { max: 100, message: "Tối đa 100 ký tự!" },
                 ]}
               >
                 <Input className="rounded-md" />
@@ -503,8 +503,8 @@ const VendorPage: React.FC = () => {
                 name="contactPhone"
                 label="Contact Phone"
                 rules={[
-                  { required: true, message: "Please enter contact phone!" },
-                  { max: 20, message: "Maximum 20 characters!" },
+                  { required: true, message: "Vui lòng nhập số điện thoại liên hệ!" },
+                  { max: 20, message: "Tối đa 20 ký tự!" },
                 ]}
               >
                 <Input className="rounded-md" />
@@ -517,16 +517,16 @@ const VendorPage: React.FC = () => {
                 name="contactEmail"
                 label="Contact Email"
                 rules={[
-                  { required: true, message: "Please enter contact email!" },
-                  { type: "email", message: "Please enter a valid email!" },
-                  { max: 100, message: "Maximum 100 characters!" },
+                  { required: true, message: "Vui lòng nhập email liên hệ!" },
+                  { type: "email", message: "Vui lòng nhập địa chỉ email hợp lệ!" },
+                  { max: 100, message: "Tối đa 100 ký tự!" },
                 ]}
               >
                 <Input className="rounded-md" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="website" label="Website" rules={[{ max: 255, message: "Maximum 255 characters!" }]}>
+              <Form.Item name="website" label="Website" rules={[{ max: 255, message: "Tối đa 255 ký tự!" }]}>
                 <Input className="rounded-md" />
               </Form.Item>
             </Col>
@@ -534,13 +534,13 @@ const VendorPage: React.FC = () => {
           <Form.Item
             name="description"
             label="Description"
-            rules={[{ max: 1000, message: "Maximum 1000 characters!" }]}
+            rules={[{ max: 1000, message: "Tối đa 1000 ký tự!" }]}
           >
             <TextArea rows={3} className="rounded-md" />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="logoUrl" label="Logo URL" rules={[{ max: 255, message: "Maximum 255 characters!" }]}>
+              <Form.Item name="logoUrl" label="Logo URL" rules={[{ max: 255, message: "Tối đa 255 ký tự!" }]}>
                 <Input className="rounded-md" />
               </Form.Item>
             </Col>
@@ -548,7 +548,7 @@ const VendorPage: React.FC = () => {
               <Form.Item
                 name="coverImageUrl"
                 label="Cover Image URL"
-                rules={[{ max: 255, message: "Maximum 255 characters!" }]}
+                rules={[{ max: 255, message: "Tối đa 255 ký tự!" }]}
               >
                 <Input className="rounded-md" />
               </Form.Item>
@@ -561,7 +561,7 @@ const VendorPage: React.FC = () => {
                 <Form.Item
                   name={["address", "street"]}
                   label="Street"
-                  rules={[{ required: true, message: "Please enter street!" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập tên đường!" }]}
                 >
                   <Input className="rounded-md" />
                 </Form.Item>
@@ -570,7 +570,7 @@ const VendorPage: React.FC = () => {
                 <Form.Item
                   name={["address", "ward"]}
                   label="Ward"
-                  rules={[{ required: true, message: "Please enter ward!" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập phường/xã!" }]}
                 >
                   <Input className="rounded-md" />
                 </Form.Item>
@@ -579,7 +579,7 @@ const VendorPage: React.FC = () => {
                 <Form.Item
                   name={["address", "district"]}
                   label="District"
-                  rules={[{ required: true, message: "Please enter district!" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập quận/huyện!" }]}
                 >
                   <Input className="rounded-md" />
                 </Form.Item>
@@ -588,7 +588,7 @@ const VendorPage: React.FC = () => {
                 <Form.Item
                   name={["address", "city"]}
                   label="City"
-                  rules={[{ required: true, message: "Please enter city!" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập thành phố/tỉnh!" }]}
                 >
                   <Input className="rounded-md" />
                 </Form.Item>
@@ -601,25 +601,25 @@ const VendorPage: React.FC = () => {
                 name="rating"
                 label="Rating"
                 rules={[
-                  { required: true, message: "Please enter rating!" },
-                  { type: "number", min: 0, max: 5, message: "Rating must be between 0 and 5!" },
+                  { required: true, message: "Vui lòng nhập đánh giá!" },
+                  { type: "number", min: 0, max: 5, message: "Đánh giá phải từ 0 đến 5!" },
                 ]}
               >
                 <InputNumber min={0} max={5} className="w-full rounded-md" />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="status" label="Status" rules={[{ required: true, message: "Please select status!" }]}>
+              <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}>
                 <Select className="rounded-md">
-                  <Option value="pending">Pending</Option>
-                  <Option value="active">Active</Option>
-                  <Option value="suspended">Suspended</Option>
+                  <Option value="pending">Chờ xử lý</Option>
+                  <Option value="active">Hoạt động</Option>
+                  <Option value="suspended">Tạm dừng</Option>
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="user" label="User" rules={[{ required: true, message: "Please select user!" }]}>
-            <Select showSearch optionFilterProp="children" className="rounded-md">
+          <Form.Item name="user" label="Người dùng" rules={[{ required: true, message: "Vui lòng chọn người dùng!" }]}>
+            <Select showSearch optionFilterProp="children" className="rounded-md" placeholder="Chọn người dùng">
               {users.map((user) => (
                 <Option key={user._id} value={user._id}>
                   {user.fullName || user.email}

@@ -287,7 +287,7 @@ const TechNewPage: React.FC = () => {
             onClick={() => handleEditTechNew(record)}
             className="text-blue-500 hover:text-blue-700"
           >
-            Edit
+            SửaSửa
           </Button>
           <Button
             type="text"
@@ -295,7 +295,7 @@ const TechNewPage: React.FC = () => {
             onClick={() => handleDeleteTechNew(record._id)}
             className="text-red-500 hover:text-red-700"
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -327,7 +327,7 @@ const TechNewPage: React.FC = () => {
             onClick={handleAddTechNew}
             className="rounded-md bg-blue-500 hover:bg-blue-600"
           >
-            Add Tech News
+            Thêm tin tức
           </Button>
         </Space>
       </div>
@@ -356,7 +356,7 @@ const TechNewPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedTechNew ? "Edit Tech News" : "Add Tech News"}
+        title={selectedTechNew ? "Sửa tin tức" : "Thêm tin tức"}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => setIsModalOpen(false)}
@@ -370,9 +370,9 @@ const TechNewPage: React.FC = () => {
             name="title"
             label="Title"
             rules={[
-              { required: true, message: "Please enter title!" },
-              { min: 2, message: "Title must be at least 2 characters!" },
-              { max: 150, message: "Title cannot exceed 150 characters!" },
+              { required: true, message: "Vui lòng nhập tiêu đề!" },
+              { min: 2, message: "Tiêu đề phải có ít nhất 2 ký tự!" },
+              { max: 150, message: "Tiêu đề không được vượt quá 150 ký tự!" },
             ]}
           >
             <Input className="rounded-md" />
@@ -381,9 +381,9 @@ const TechNewPage: React.FC = () => {
             name="keyword"
             label="Keyword"
             rules={[
-              { required: true, message: "Please enter keyword!" },
-              { min: 2, message: "Keyword must be at least 2 characters!" },
-              { max: 50, message: "Keyword cannot exceed 50 characters!" },
+              { required: true, message: "Vui lòng nhập từ khóa!" },
+              { min: 2, message: "Từ khóa phải có ít nhất 2 ký tự!" },
+              { max: 50, message: "Từ khóa không được vượt quá 50 ký tự!" },
             ]}
           >
             <Input className="rounded-md" />
@@ -391,7 +391,7 @@ const TechNewPage: React.FC = () => {
           <Form.Item
             name="thumbnail"
             label="Thumbnail URL"
-            rules={[{ max: 255, message: "URL cannot exceed 255 characters!" }]}
+            rules={[{ max: 255, message: "URL không được vượt quá 255 ký tự!" }]}
           >
             <Input className="rounded-md" />
           </Form.Item>
@@ -399,13 +399,13 @@ const TechNewPage: React.FC = () => {
             name="description"
             label="Description"
             rules={[
-              { required: true, message: "Please enter description!" },
-              { max: 255, message: "Description cannot exceed 255 characters!" },
+              { required: true, message: "Vui lòng nhập mô tả!" },
+              { max: 255, message: "Mô tả không được vượt quá 255 ký tự!" },
             ]}
           >
             <TextArea rows={3} className="rounded-md" />
           </Form.Item>
-          <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please enter content!" }]}>
+          <Form.Item name="content" label="Content" rules={[{ required: true, message: "Vui lòng nhập nội dung!" }]}>
             <TextArea rows={6} className="rounded-md" />
           </Form.Item>
           <Form.Item name="date" label="Date">

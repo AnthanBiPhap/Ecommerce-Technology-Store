@@ -158,30 +158,30 @@ const ProductVariantsPage: React.FC = () => {
   }
 
   const handleAddVariant = () => {
-    setSelectedVariant(null)
     form.resetFields()
-    form.setFieldsValue({ isActive: true })
+    setSelectedVariant(null)
     setIsModalOpen(true)
+    form.setFieldsValue({
+      isActive: true, // Set default status to active
+      price: 0, // Default price
+      stock: 0, // Default stock
+      salePrice: undefined // No default sale price
+    })
   }
 
   const handleEditVariant = (variant: ProductVariant) => {
+    // Convert attributes object to string for the form
+    const attributesString = variant.attributes 
+      ? Object.entries(variant.attributes)
+          .map(([key, value]) => `${key}:${value}`)
+          .join(",")
+      : ""
     setSelectedVariant(variant)
     form.setFieldsValue({
-      sku: variant.sku,
-      variantName: variant.variantName,
-      // Chuyển attributes object thành chuỗi để hiển thị trong TextArea
-      attributes: variant.attributes
-        ? Object.entries(variant.attributes)
-            .map(([key, value]) => `${key}:${value}`)
-            .join(",")
-        : "",
-      price: variant.price,
-      salePrice: variant.salePrice,
-      stock: variant.stock,
-      // Chuyển images array thành chuỗi để hiển thị trong TextArea
-      images: Array.isArray(variant.images) ? variant.images.join(",") : "",
-      isActive: variant.isActive,
+      ...variant,
       product: variant.product?._id,
+      attributes: attributesString,
+      images: variant.images?.join(", ") || ""
     })
     setIsModalOpen(true)
   }
@@ -239,6 +239,7 @@ const ProductVariantsPage: React.FC = () => {
             return obj
           }, {})
       }
+      
       // Parse images nếu là string -> array
       if (typeof values.images === "string") {
         values.images = values.images
@@ -400,7 +401,7 @@ const ProductVariantsPage: React.FC = () => {
             onClick={() => handleEditVariant(record)}
             className="text-blue-500 hover:text-blue-700"
           >
-            Edit
+            Sửa
           </Button>
           <Button
             type="text"
@@ -408,7 +409,7 @@ const ProductVariantsPage: React.FC = () => {
             onClick={() => handleDeleteVariant(record._id)}
             className="text-red-500 hover:text-red-700"
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -440,7 +441,7 @@ const ProductVariantsPage: React.FC = () => {
             onClick={handleAddVariant}
             className="rounded-md bg-blue-500 hover:bg-blue-600"
           >
-            Add Variant
+            Thêm Biến Thể
           </Button>
         </Space>
       </div>
@@ -456,7 +457,7 @@ const ProductVariantsPage: React.FC = () => {
             total: searchText ? filteredVariants.length : pagination.totalRecord,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50"],
-            showTotal: (total) => <span className="ml-0">Total {total} variants</span>,
+            showTotal: (total) => <span className="ml-0">Tổng cộng {total} biến thể</span>,
             className: "ant-table-pagination",
             onChange: (page: number, pageSize: number) => {
               setPagination({ ...pagination, page, limit: pageSize })
@@ -472,7 +473,7 @@ const ProductVariantsPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedVariant ? "Edit Product Variant" : "Add Product Variant"}
+        title={selectedVariant ? "Chỉnh Sửa Biến Thể" : "Thêm Mới Biến Thể"}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => setIsModalOpen(false)}
@@ -483,8 +484,8 @@ const ProductVariantsPage: React.FC = () => {
         className="p-4"
       >
         <Form form={form} layout="vertical" className="mt-4">
-          <Form.Item name="product" label="Product" rules={[{ required: true, message: "Please select a product!" }]}>
-            <Select showSearch placeholder="Select a product" optionFilterProp="children" className="rounded-md">
+          <Form.Item name="product" label="Sản Phẩm" rules={[{ required: true, message: "Vui lòng chọn sản phẩm!" }]}>
+            <Select showSearch placeholder="Chọn sản phẩm" optionFilterProp="children" className="rounded-md">
               {products.map((p) => (
                 <Option key={p._id} value={p._id}>
                   {p.product_name}
@@ -493,66 +494,77 @@ const ProductVariantsPage: React.FC = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item name="sku" label="SKU" rules={[{ required: true, message: "Please enter SKU!" }]}>
-            <Input className="rounded-md" />
+          <Form.Item name="sku" label="Mã SKU" rules={[{ required: true, message: "Vui lòng nhập mã SKU!" }]}>
+            <Input className="rounded-md" placeholder="Nhập mã SKU" />
           </Form.Item>
 
           <Form.Item
             name="variantName"
-            label="Variant Name"
-            rules={[{ required: true, message: "Please enter variant name!" }]}
+            label="Tên Biến Thể"
+            rules={[{ required: true, message: "Vui lòng nhập tên biến thể!" }]}
           >
-            <Input className="rounded-md" />
+            <Input className="rounded-md" placeholder="Nhập tên biến thể" />
           </Form.Item>
 
           <Form.Item
             name="attributes"
-            label="Attributes"
-            rules={[{ required: true, message: "Please enter attributes!" }]}
-            help="Enter attributes in format: color:red,size:M"
+            label="Thuộc Tính"
+            rules={[{ required: true, message: "Vui lòng nhập thuộc tính!" }]}
+            help="Nhập thuộc tính theo định dạng: màu:đỏ,kích thước:M"
           >
             <TextArea
               rows={3}
-              placeholder="Enter attributes separated by commas (e.g., color:red,size:M)"
+              placeholder="Nhập các thuộc tính cách nhau bằng dấu phẩy (ví dụ: màu:đỏ,kích thước:M)"
               className="rounded-md"
             />
           </Form.Item>
 
-          <Form.Item name="price" label="Price" rules={[{ required: true, message: "Please enter price!" }]}>
+          <Form.Item name="price" label="Giá Bán" rules={[{ required: true, message: "Vui lòng nhập giá bán!" }]}>
             <InputNumber
               min={0}
               formatter={(value) => `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               parser={(value) => (Number(value!.replace(/[^0-9]/g, '')) || 0) as 0}
               style={{ width: "100%" }}
               className="rounded-md"
+              placeholder="Nhập giá bán"
             />
           </Form.Item>
 
-          <Form.Item name="salePrice" label="Sale Price">
+          <Form.Item name="salePrice" label="Giá Khuyến Mãi">
             <InputNumber
               min={0}
               formatter={(value) => `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               parser={(value) => (Number(value!.replace(/[^0-9]/g, '')) || 0) as 0}
               style={{ width: "100%" }}
               className="rounded-md"
+              placeholder="Nhập giá khuyến mãi (nếu có)"
             />
           </Form.Item>
 
-          <Form.Item name="stock" label="Stock" rules={[{ required: true, message: "Please enter stock quantity!" }]}>
-            <InputNumber min={0} style={{ width: "100%" }} className="rounded-md" />
+          <Form.Item name="stock" label="Số Lượng Tồn Kho" rules={[{ required: true, message: "Vui lòng nhập số lượng tồn kho!" }]}>
+            <InputNumber 
+              min={0} 
+              style={{ width: "100%" }} 
+              className="rounded-md" 
+              placeholder="Nhập số lượng tồn kho"
+            />
           </Form.Item>
 
           <Form.Item
             name="images"
-            label="Images"
-            rules={[{ required: true, message: "Please enter at least one image URL!" }]}
-            help="Enter image URLs separated by commas"
+            label="Hình Ảnh"
+            rules={[{ required: true, message: "Vui lòng nhập ít nhất một đường dẫn ảnh!" }]}
+            help="Nhập các đường dẫn ảnh cách nhau bằng dấu phẩy"
           >
-            <TextArea rows={3} placeholder="Enter image URLs separated by commas" className="rounded-md" />
+            <TextArea 
+              rows={3} 
+              placeholder="Nhập các đường dẫn ảnh cách nhau bằng dấu phẩy" 
+              className="rounded-md" 
+            />
           </Form.Item>
 
-          <Form.Item name="isActive" label="Status" valuePropName="checked">
-            <Checkbox>Active</Checkbox>
+          <Form.Item name="isActive" label="Trạng Thái" valuePropName="checked">
+            <Checkbox>Đang hoạt động</Checkbox>
           </Form.Item>
         </Form>
       </Modal>

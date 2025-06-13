@@ -323,7 +323,7 @@ const ReviewPage: React.FC = () => {
             onClick={() => handleEditReview(record)}
             className="text-blue-500 hover:text-blue-700"
           >
-            Edit
+            Sửa
           </Button>
           <Button
             type="text"
@@ -331,7 +331,7 @@ const ReviewPage: React.FC = () => {
             onClick={() => handleDeleteReview(record._id)}
             className="text-red-500 hover:text-red-700"
           >
-            Delete
+            Xóa
           </Button>
         </Space>
       ),
@@ -369,7 +369,7 @@ const ReviewPage: React.FC = () => {
             onClick={handleAddReview}
             className="rounded-md bg-blue-500 hover:bg-blue-600"
           >
-            Add Review
+            Thêm Review
           </Button>
         </Space>
       </div>
@@ -399,7 +399,7 @@ const ReviewPage: React.FC = () => {
       </div>
 
       <Modal
-        title={selectedReview ? "Edit Review" : "Add Review"}
+        title={selectedReview ? "Sửa Review" : "Thêm Review"}
         open={isModalOpen}
         onOk={handleModalOk}
         onCancel={() => {
