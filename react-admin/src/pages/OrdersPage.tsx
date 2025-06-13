@@ -2,18 +2,10 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Table, Button, Space, Modal, Form, Input, message, Select, InputNumber, Typography, Tag, Divider } from "antd"
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  DollarOutlined,
-  ClockCircleOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  SearchOutlined, 
-  ShoppingCartOutlined,
-} from "@ant-design/icons"
+import { Table, Button, Space, Modal, Form, Input, message, Select, InputNumber, Typography, Tag, Divider, DatePicker } from "antd"
+const { RangePicker } = DatePicker;
+import dayjs from "dayjs"
+import { PlusOutlined, EditOutlined, DeleteOutlined, DollarOutlined, ClockCircleOutlined, CheckOutlined, CloseOutlined, SearchOutlined, ShoppingCartOutlined, PhoneOutlined, UserOutlined, MailOutlined, ClearOutlined, ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons"
 import axios from "axios"
 import { useAuthStore } from "../stores/useAuthStore"
 import { useNavigate } from "react-router-dom"
@@ -107,6 +99,17 @@ const OrdersPage: React.FC = () => {
   const [allProducts, setAllProducts] = useState<ProductApi[]>([])
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [filters, setFilters] = useState({
+    orderNumber: "",
+    phone: "",
+    recipientName: "",
+    email: "",
+    startDate: "",
+    endDate: "",
+    paymentStatus: "",
+    status: "",
+  })
+  const [sortConfig, setSortConfig] = useState<{field: string; direction: 'asc' | 'desc'} | null>(null)
 
   const isAdmin = user?.roles === "admin"
 
@@ -114,39 +117,65 @@ const OrdersPage: React.FC = () => {
     fetchOrders()
   }, [tokens?.accessToken, pagination.page, pagination.limit])
 
-  const fetchOrders = async (search = "") => {
+  const buildQueryParams = () => {
+    const params: any = {
+      page: pagination.page,
+      limit: pagination.limit,
+    };
+
+    // Add search/filter parameters
+    if (filters.orderNumber) params.orderNumber = filters.orderNumber;
+    if (filters.phone) params['shippingInfor.phone'] = filters.phone;
+    if (filters.recipientName) params['shippingInfor.recipientName'] = filters.recipientName;
+    if (filters.email) params.email = filters.email;
+    if (filters.startDate) params.startDate = filters.startDate;
+    if (filters.endDate) params.endDate = filters.endDate;
+    if (filters.paymentStatus) params.paymentStatus = filters.paymentStatus;
+    if (filters.status) params.status = filters.status;
+
+    // Add sorting
+    if (sortConfig) {
+      params.sort_by = sortConfig.field;
+      params.sort_type = sortConfig.direction === 'asc' ? 'asc' : 'desc';
+    }
+
+    return params;
+  };
+
+  const fetchOrders = async () => {
     try {
       if (!tokens?.accessToken) {
-        message.error("Vui lòng đăng nhập để tiếp tục")
-        navigate("/login")
-        return
+        message.error("Vui lòng đăng nhập để tiếp tục");
+        navigate("/login");
+        return;
       }
 
-      setLoading(true)
-      try {
+      setLoading(true);
       const response = await axios.get(`${env.API_URL}/api/v1/orders`, {
         headers: { Authorization: `Bearer ${tokens.accessToken}` },
-        params: {
-          page: pagination.page,
-          limit: pagination.limit,
-          ...(search ? { orderNumber: search } : {}),
-        },
-      })
-        console.log('API response:', response.data)
-      setOrders(response.data.data.orders)
-      setPagination(response.data.data.pagination)
+        params: buildQueryParams(),
+      });
+
+      setOrders(response.data.data.orders);
+      setPagination({
+        ...pagination,
+        totalRecord: response.data.data.pagination.totalRecord,
+      });
     } catch (error: any) {
-        console.error('Error fetching orders:', error.response?.data || error.message)
-        message.error("Lỗi khi lấy danh sách đơn hàng")
-      } finally {
-        setLoading(false)
-      }
-    } catch (error: any) {
-      handleError(error, "Lỗi khi lấy danh sách đơn hàng")
+      console.error('Error fetching orders:', error.response?.data || error.message);
+      handleError(error, "Lỗi khi lấy danh sách đơn hàng");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchOrders();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [filters, sortConfig, pagination.page, pagination.limit]);
 
   const handleError = (error: any, defaultMessage: string) => {
     if (error.response?.status === 401) {
@@ -235,7 +264,7 @@ const OrdersPage: React.FC = () => {
           })
 
           message.success("Xóa đơn hàng thành công")
-          fetchOrders(searchTerm)
+          fetchOrders()
         } catch (error: any) {
           handleError(error, "Lỗi khi xóa đơn hàng")
         } finally {
@@ -270,7 +299,7 @@ const OrdersPage: React.FC = () => {
       }
 
       setIsModalOpen(false)
-      fetchOrders(searchTerm)
+      fetchOrders()
     } catch (error: any) {
       handleError(error, "Lỗi khi xử lý đơn hàng")
     } finally {
@@ -286,22 +315,37 @@ const OrdersPage: React.FC = () => {
     })
   }
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value)
-    setPagination({ ...pagination, page: 1 })
-    
-    // Tìm kiếm trực tiếp trên dữ liệu
-    const filtered = orders.filter((order) => {
-      const searchLower = value.toLowerCase()
-      return (
-        order.orderNumber.toLowerCase().includes(searchLower) ||
-        order.user?.fullName?.toLowerCase().includes(searchLower) ||
-        order.user?.email?.toLowerCase().includes(searchLower) ||
-        order.user?.phone?.toLowerCase().includes(searchLower)
-      )
-    })
-    setFilteredOrders(filtered)
-  }
+  const handleSearch = (field: string, value: string) => {
+    setPagination({ ...pagination, page: 1 });
+    setFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleDateRangeChange = (dates: any, dateStrings: [string, string]) => {
+    if (dates) {
+      setFilters(prev => ({
+        ...prev,
+        startDate: dateStrings[0],
+        endDate: dateStrings[1]
+      }));
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        startDate: "",
+        endDate: ""
+      }));
+    }
+  };
+
+  const handleSort = (field: string) => {
+    let direction: 'asc' | 'desc' = 'desc';
+    if (sortConfig && sortConfig.field === field && sortConfig.direction === 'desc') {
+      direction = 'asc';
+    }
+    setSortConfig({ field, direction });
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -359,7 +403,17 @@ const OrdersPage: React.FC = () => {
 
   const columns = [
     {
-      title: "Mã Đơn Hàng",
+      title: (
+        <div 
+          className="flex items-center cursor-pointer"
+          onClick={() => handleSort('orderNumber')}
+        >
+          Mã Đơn Hàng
+          {sortConfig?.field === 'orderNumber' && (
+            sortConfig.direction === 'asc' ? <ArrowUpOutlined className="ml-1" /> : <ArrowDownOutlined className="ml-1" />
+          )}
+        </div>
+      ),
       dataIndex: "orderNumber",
       key: "orderNumber",
       width: 150,
@@ -367,7 +421,17 @@ const OrdersPage: React.FC = () => {
     },
 
     {
-      title: "Tổng Tiền",
+      title: (
+        <div 
+          className="flex items-center cursor-pointer"
+          onClick={() => handleSort('totalAmount')}
+        >
+          Tổng Tiền
+          {sortConfig?.field === 'totalAmount' && (
+            sortConfig.direction === 'asc' ? <ArrowUpOutlined className="ml-1" /> : <ArrowDownOutlined className="ml-1" />
+          )}
+        </div>
+      ),
       dataIndex: "totalAmount",
       key: "totalAmount",
       width: 150,
@@ -446,7 +510,17 @@ const OrdersPage: React.FC = () => {
     //   },
     // },
     {
-      title: "Ngày Tạo",
+      title: (
+        <div 
+          className="flex items-center cursor-pointer"
+          onClick={() => handleSort('createdAt')}
+        >
+          Ngày Tạo
+          {sortConfig?.field === 'createdAt' && (
+            sortConfig.direction === 'asc' ? <ArrowUpOutlined className="ml-1" /> : <ArrowDownOutlined className="ml-1" />
+          )}
+        </div>
+      ),
       dataIndex: "createdAt",
       key: "createdAt",
       width: 180,
@@ -495,13 +569,91 @@ const OrdersPage: React.FC = () => {
 
       <div className="mb-6">
         <Space>
-          <Search
-            placeholder="Tìm kiếm theo mã đơn hàng"
-            allowClear
-            size="middle"
-            onChange={(e) => handleSearch(e.target.value)}
-            className="w-80 rounded-md"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+            <Search
+              placeholder="Tìm theo mã đơn hàng"
+              value={filters.orderNumber}
+              onChange={(e) => handleSearch('orderNumber', e.target.value)}
+              className="w-full rounded-md"
+              prefix={<SearchOutlined />}
+            />
+            <Search
+              placeholder="Tìm theo số điện thoại"
+              value={filters.phone}
+              onChange={(e) => handleSearch('phone', e.target.value)}
+              className="w-full rounded-md"
+              prefix={<PhoneOutlined />}
+            />
+            <Search
+              placeholder="Tìm theo tên người nhận"
+              value={filters.recipientName}
+              onChange={(e) => handleSearch('recipientName', e.target.value)}
+              className="w-full rounded-md"
+              prefix={<UserOutlined />}
+            />
+            <Search
+              placeholder="Tìm theo email"
+              value={filters.email}
+              onChange={(e) => handleSearch('email', e.target.value)}
+              className="w-full rounded-md"
+              prefix={<MailOutlined />}
+            />
+            <RangePicker
+              placeholder={['Từ ngày', 'Đến ngày']}
+              format="DD/MM/YYYY"
+              className="w-full"
+              onChange={handleDateRangeChange}
+              value={[
+                filters.startDate ? dayjs(filters.startDate, 'YYYY-MM-DD') : null,
+                filters.endDate ? dayjs(filters.endDate, 'YYYY-MM-DD') : null
+              ]}
+            />
+            <Select
+              placeholder="Trạng thái thanh toán"
+              className="w-full"
+              allowClear
+              value={filters.paymentStatus || undefined}
+              onChange={(value) => handleSearch('paymentStatus', value)}
+              options={[
+                { value: 'pending', label: 'Chờ thanh toán' },
+                { value: 'paid', label: 'Đã thanh toán' },
+                { value: 'failed', label: 'Thanh toán thất bại' },
+              ]}
+            />
+            <Select
+              placeholder="Trạng thái đơn hàng"
+              className="w-full"
+              allowClear
+              value={filters.status || undefined}
+              onChange={(value) => handleSearch('status', value)}
+              options={[
+                { value: 'pending', label: 'Chờ xử lý' },
+                { value: 'processing', label: 'Đang xử lý' },
+                { value: 'shipped', label: 'Đang giao' },
+                { value: 'delivered', label: 'Đã giao' },
+                { value: 'cancelled', label: 'Đã hủy' },
+              ]}
+            />
+            <Button 
+              type="default" 
+              onClick={() => {
+                setFilters({
+                  orderNumber: "",
+                  phone: "",
+                  recipientName: "",
+                  email: "",
+                  startDate: "",
+                  endDate: "",
+                  paymentStatus: "",
+                  status: "",
+                });
+                setSortConfig(null);
+              }}
+              icon={<ClearOutlined />}
+            >
+              Xóa bộ lọc
+            </Button>
+          </div>
         </Space>
       </div>
 
