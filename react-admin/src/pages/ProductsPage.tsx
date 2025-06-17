@@ -835,15 +835,19 @@ const ProductsPage: React.FC = () => {
 
                 <Form.Item
                   name="salePrice"
-                  label="Giá Khuyến Mãi"
+                  label="Giá Khuyến Mãi (Tùy chọn)"
                   rules={[
-                    { required: true, message: "Vui lòng nhập giá khuyến mãi!" },
                     {
                       type: "number",
-                      min: 1,
                       message: "Giá khuyến mãi phải lớn hơn 0!",
-                      validator: (_, value) =>
-                        value > 0 ? Promise.resolve() : Promise.reject(new Error('Giá khuyến mãi phải lớn hơn 0!')),
+                      validator: (_, value) => {
+                        if (value === undefined || value === null || value === '') {
+                          return Promise.resolve();
+                        }
+                        return value > 0 
+                          ? Promise.resolve() 
+                          : Promise.reject(new Error('Giá khuyến mãi phải lớn hơn 0!'));
+                      },
                     },
                   ]}
                 >
